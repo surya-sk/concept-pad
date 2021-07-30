@@ -36,5 +36,15 @@ namespace ConceptPad.Views
             concepts.Add(new Concept { Name = "Name3", Type ="Game3", Description = "Description", DateCreated = DateTime.Now, IsInProduction = false});
             this.InitializeComponent();
         }
+
+        private void RadioButtons_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void CreateButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
