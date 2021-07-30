@@ -11,8 +11,8 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="6*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
@@ -25,15 +25,15 @@
             <GridView.ItemTemplate>
                 <DataTemplate x:DataType="data:Concept">
                     <StackPanel Orientation="Vertical">
-                        <TextBlock x:Name="NameTextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock x:Name="TypeTextBox" Text="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock x:Name="DateBox" Text="{Binding DateCreated, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock x:Name="NameTextBox" Text="{Binding Name}" />
+                        <TextBlock x:Name="TypeTextBox" Text="{Binding Type}" />
+                        <TextBlock x:Name="DateBox" Text="{Binding DateCreated}" />
                     </StackPanel>
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
         
-        <CommandBar Background="Transparent" Grid.Row="1">
+        <CommandBar Background="Transparent" Grid.Row="2">
             <AppBarButton Icon="Help" Label="Help" />
             <AppBarButton Icon="Setting" Label="Settings" />
         </CommandBar>
