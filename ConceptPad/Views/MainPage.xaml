@@ -1,0 +1,28 @@
+﻿<Page
+    x:Class="ConceptPad.Views.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ConceptPad.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="6*"/>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="Concept Pad" FontSize="50" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <GridView Grid.Row="1">
+            <GridViewItem>
+                <TextBlock Text="Some text" />
+            </GridViewItem>
+        </GridView>
+        <CommandBar Background="Transparent" Grid.Row="1">
+            <AppBarButton Icon="Help" Label="Help" />
+            <AppBarButton Icon="Setting" Label="Settings" />
+        </CommandBar>
+    </Grid>
+</Page>
