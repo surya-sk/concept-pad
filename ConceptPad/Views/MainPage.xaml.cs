@@ -69,7 +69,7 @@ namespace ConceptPad.Views
                 concept.Name = NameInput.Text;
                 concept.Description = DescriptionInput.Text;
                 concept.Tools = ToolsInput.Text;
-                concept.DateCreated = DateTime.Now();
+                concept.DateCreated = DateTime.Now;
                 concepts.Add(concept);
                 ClearInputs();
             }
