@@ -39,20 +39,22 @@
                         <TextBlock Text="Title" />
                         <TextBox x:Name="NameInput" PlaceholderText="Enter a tentative title" />
                     </StackPanel>
-                    <muxc:RadioButtons Header="Type" SelectedIndex="0" SelectionChanged="RadioButtons_SelectionChanged" MaxColumns="2" Margin="0,0,0,30">
+                    <muxc:RadioButtons x:Name="TypeButtons" Header="Type" SelectedIndex="0" 
+                                       SelectionChanged="RadioButtons_SelectionChanged" MaxColumns="2" Margin="0,0,0,30">
                         <x:String>Game</x:String>
                         <x:String>App</x:String>
                     </muxc:RadioButtons>
                     <StackPanel Orientation="Vertical" Margin="0,0,0,30">
                         <TextBlock Text="Description" />
-                        <RichEditBox x:Name="DescriptionInput" PlaceholderText="Enter the story/details of your concept" 
-                                 TextWrapping="Wrap" IsSpellCheckEnabled="True"/>
+                        <TextBox x:Name="DescriptionInput" PlaceholderText="Enter the story/details of your concept" 
+                                 TextWrapping="Wrap" IsSpellCheckEnabled="True" AcceptsReturn="True"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="0,0,0,30">
                         <TextBlock x:Name="ToolsText" Text="Tools"/>
                         <TextBox x:Name="ToolsInput" PlaceholderText="Game Engine, Framework etc" />
                     </StackPanel>
-                    <Button x:Name="CreateButton" Content="Create" Click="CreateButton_Click" Margin="0,0,0,40" />
+                    <Button x:Name="CreateButton" Content="Create" Click="CreateButton_Click" Margin="0,0,0,10" />
+                    <TextBlock x:Name="ErrorText" Text="Fill in all the fields!" FontStyle="Italic" Foreground="Red" Visibility="Collapsed"/>
                 </StackPanel>
             </PivotItem>
         </Pivot>

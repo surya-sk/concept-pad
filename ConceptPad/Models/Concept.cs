@@ -18,6 +18,7 @@ namespace ConceptPad.Models
         private string type;
         private string description;
         private DateTime dateCreated;
+        private string tools;
         private bool isInProduction;
 
         public string Name
@@ -67,6 +68,16 @@ namespace ConceptPad.Models
             {
                 isInProduction = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsInProduction)));
+            }
+        }
+        
+        public string Tools
+        {
+            get => tools;
+            set
+            {
+                tools = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Tools)));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
