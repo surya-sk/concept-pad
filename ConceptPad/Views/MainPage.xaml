@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:ConceptPad.Views"
+    xmlns:data="using:ConceptPad.Models"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -14,12 +15,24 @@
             <RowDefinition Height="6*"/>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        
         <TextBlock Grid.Row="0" Text="Concept Pad" FontSize="50" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
-        <GridView Grid.Row="1">
-            <GridViewItem>
-                <TextBlock Text="Some text" />
-            </GridViewItem>
+
+        <GridView Name="ConceptView"
+                  ItemsSource="{x:Bind concepts}"
+                  SelectionMode="None"
+                  Grid.Row="1">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="data:Concept">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock x:Name="NameTextBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock x:Name="TypeTextBox" Text="{Binding Type, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock x:Name="DateBox" Text="{Binding DateCreated, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
+                </DataTemplate>
+            </GridView.ItemTemplate>
         </GridView>
+        
         <CommandBar Background="Transparent" Grid.Row="1">
             <AppBarButton Icon="Help" Label="Help" />
             <AppBarButton Icon="Setting" Label="Settings" />
