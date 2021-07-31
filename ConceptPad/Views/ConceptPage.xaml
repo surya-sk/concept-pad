@@ -6,6 +6,7 @@
     xmlns:data="using:ConceptPad.Models"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -14,23 +15,54 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <ContentControl Content="{x:Bind concept}">
-            <ContentControl.ContentTemplate>
-                <DataTemplate x:DataType="data:Concept">
-                    <StackPanel Orientation="Vertical">
-                        <TextBox x:Name="TitleText" Text="{Binding Name}" IsReadOnly="False" FontSize="50" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding Type}" />
-                        <TextBox x:Name="DescriptionText" Text="{Binding Description}" IsReadOnly="True" />
-                        <TextBox x:Name="ToolsText" Text="{Binding Tools}" IsReadOnly="True" />
-                    </StackPanel>
-                </DataTemplate>
-            </ContentControl.ContentTemplate>
-        </ContentControl>
+
+        <Pivot>
+            <PivotItem Header="Details">
+                <ContentControl Content="{x:Bind concept}">
+                    <ContentControl.ContentTemplate>
+                        <DataTemplate x:DataType="data:Concept">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock x:Name="TitleText" Text="{Binding Name}" FontSize="50" FontWeight="SemiBold" Margin="0,0,0,20"/>
+                                    <TextBlock Text="{Binding Type}" Margin="0,0,0,20"/>
+                                    <TextBlock x:Name="DescriptionText" Text="{Binding Description}" Margin="0,0,0,20"/>
+                                    <TextBlock x:Name="ToolsText" Text="{Binding Tools}"  Margin="0,0,0,20"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DataTemplate>
+                    </ContentControl.ContentTemplate>
+                </ContentControl>
+            </PivotItem>
+            <PivotItem Header="Edit">
+                <ContentControl Content="{x:Bind concept}">
+                    <ContentControl.ContentTemplate>
+                        <DataTemplate x:DataType="data:Concept">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBox x:Name="TitleEditBox" Text="{Binding Name, Mode=TwoWay}" Margin="0,0,0,20" TextChanged="TitleEditBox_TextChanged"/>
+                                    <TextBox x:Name="DescriptionEditBox" Text="{Binding Description, Mode=TwoWay}" Margin="0,0,0,20" TextChanged="DescriptionEditBox_TextChanged"/>
+                                    <TextBox x:Name="ToolsEditBox" Text="{Binding Tools, Mode=TwoWay}" Margin="0,0,0,20" TextChanged="ToolsEditBox_TextChanged"/>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DataTemplate>
+                    </ContentControl.ContentTemplate>
+                </ContentControl>
+            </PivotItem>
+        </Pivot>
+
+        <muxc:ProgressRing x:Name="ProgRing" IsActive="False" />
 
         <CommandBar Grid.Row="1">
-            <AppBarButton x:Name="SaveButton" Icon="Save" Label="Save" Click="SaveButton_Click" Visibility="Collapsed"/>
-            <AppBarButton x:Name="EditButton" Icon="Edit" Label="Edit" Click="EditButton_Click"/>
-            <AppBarButton x:Name="DeleteButton" Icon="Delete" Label="Delete" Click="DeleteButton_Click"/>
+            <AppBarButton x:Name="DeleteButton" Icon="Delete" Label="Delete">
+                <AppBarButton.Flyout>
+                    <Flyout>
+                        <StackPanel>
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="This concept will be permanently gone. Do you want to delete?" Margin="0,0,0,12"/>
+                            <Button x:Name="DeleteConfirmation" Content="Yes, delete the concept"  Click="DeleteConfirmation_Click"/>
+                        </StackPanel>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
             <AppBarButton x:Name="CloseButton" Icon="Clear" Label="Close" Click="CloseButton_Click"/>
         </CommandBar>
     </Grid>

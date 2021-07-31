@@ -29,6 +29,9 @@ namespace ConceptPad.Views
     {
         private Concept concept;
         private ObservableCollection<Concept> concepts;
+        Guid selectedId;
+        bool edited = false;
+        private int conceptIndex;
         public ConceptPage()
         {
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
@@ -38,36 +41,61 @@ namespace ConceptPad.Views
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Guid selectedId = (Guid)e.Parameter;
+            selectedId = (Guid)e.Parameter;
             foreach(Concept c in concepts)
             {
                 if(selectedId == c.Id)
                 {
                     concept = c;
+                    conceptIndex = concepts.IndexOf(c);
                 }
             }
             base.OnNavigatedTo(e);
         }
 
-        private void EditButton_Click(object sender, RoutedEventArgs e)
-        {
-            SaveButton.Visibility = Visibility.Visible;
-            EditButton.Visibility = Visibility.Collapsed;
-        }
-
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            ProgRing.IsActive = true;
+            if(edited)
+            {
+                foreach(Concept c in concepts)
+                {
+                    if(c.Id == selectedId)
+                    {
+                        c.Name = concept.Name;
+                        c.Description = concept.Description;
+                        c.Tools = concept.Tools;
+                    }
+                }
+                Profile.GetInstance().SaveSettings(concepts);
+                Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+            }
+            ProgRing.IsActive = false;
             Frame.Navigate(typeof(MainPage));
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private void TitleEditBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            edited = true;
+        }
 
+        private void ToolsEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            edited = true;
+        }
+
+        private void DescriptionEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            edited = true;
+        }
+
+        private void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
+        {
+            ProgRing.IsActive = true;
+            concepts.RemoveAt(conceptIndex);
+            Profile.GetInstance().SaveSettings(concepts);
+            Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+            Frame.Navigate(typeof(MainPage));
         }
     }
 }

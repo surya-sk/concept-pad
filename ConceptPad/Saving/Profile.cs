@@ -38,7 +38,7 @@ namespace ConceptPad.Saving
             SaveSettings(Concepts);
         }
 
-        public async void WriteProfileAsync()
+        public async Task WriteProfileAsync()
         {
             string json = JsonConvert.SerializeObject(Concepts);
             StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);

@@ -91,5 +91,11 @@ namespace ConceptPad.Views
             var selectedConcept = (Concept)e.ClickedItem;
             Frame.Navigate(typeof(ConceptPage), selectedConcept.Id);
         }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            ProgRing.IsActive = true;
+            Frame.Navigate(typeof(MainPage));
+        }
     }
 }
