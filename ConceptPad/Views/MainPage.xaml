@@ -22,8 +22,8 @@
                           ItemsSource="{x:Bind concepts}"
                           IsItemClickEnabled="True"
                           ItemClick="ConceptView_ItemClick"
-                         SelectionMode="None"
-                        Grid.Row="1">
+                          SelectionMode="None"
+                          Grid.Row="1">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="data:Concept">
                             <StackPanel Orientation="Vertical">
@@ -60,9 +60,9 @@
                 </StackPanel>
             </PivotItem>
         </Pivot>
-        
+
         <CommandBar Background="Transparent" Grid.Row="2">
-            <AppBarButton x:Name="HelpButton" Icon="Help" Label="Help" Click="HelpButton_Click" />
+            <AppBarButton x:Name="RefreshButton" Icon="Refresh" Label="Refresh"/>
             <AppBarButton Icon="Setting" Label="Settings" />
         </CommandBar>
     </Grid>

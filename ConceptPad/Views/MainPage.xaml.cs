@@ -17,6 +17,7 @@ using ConceptPad.Models;
 using muxc = Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
 using ConceptPad.Saving;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -32,15 +33,12 @@ namespace ConceptPad.Views
         private string type;
         public MainPage()
         {
-            Profile.GetInstance().ReadProfile();
+            Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             concepts = Profile.GetInstance().GetConcepts();
             this.InitializeComponent();
         }
 
-        void Refresh()
-        {
-            Frame.Navigate(typeof(MainPage));
-        }
+
         private void RadioButtons_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(TypeButtons != null && sender is muxc.RadioButtons rb)
@@ -76,7 +74,7 @@ namespace ConceptPad.Views
                 };
                 concepts.Add(concept);
                 Profile.GetInstance().SaveSettings(concepts);
-                Profile.GetInstance().WriteProfile();
+                Profile.GetInstance().WriteProfileAsync();
                 ClearInputs();
             }
         }
@@ -92,11 +90,6 @@ namespace ConceptPad.Views
         {
             var selectedConcept = (Concept)e.ClickedItem;
             Frame.Navigate(typeof(ConceptPage), selectedConcept.Id);
-        }
-
-        private void HelpButton_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(MainPage));
         }
     }
 }

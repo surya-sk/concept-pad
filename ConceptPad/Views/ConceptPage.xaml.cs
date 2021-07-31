@@ -16,6 +16,7 @@ using ConceptPad.Models;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using ConceptPad.Saving;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -30,7 +31,7 @@ namespace ConceptPad.Views
         private ObservableCollection<Concept> concepts;
         public ConceptPage()
         {
-            Profile.GetInstance().ReadProfile();
+            Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             concepts = Profile.GetInstance().GetConcepts();
             this.InitializeComponent();
         }

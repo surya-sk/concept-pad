@@ -13,7 +13,7 @@ namespace ConceptPad.Saving
 {
     class Profile
     {
-        private static Profile instance;
+        private static Profile instance = new Profile();
         private ObservableCollection<Concept> Concepts = null;
         ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
         StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
@@ -25,10 +25,6 @@ namespace ConceptPad.Saving
 
         public static Profile GetInstance()
         {
-            if(instance == null)
-            {
-                instance = new Profile();
-            }
             return instance;
         }
 
@@ -42,7 +38,7 @@ namespace ConceptPad.Saving
             SaveSettings(Concepts);
         }
 
-        public async void WriteProfile()
+        public async void WriteProfileAsync()
         {
             string json = JsonConvert.SerializeObject(Concepts);
             StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
@@ -54,7 +50,7 @@ namespace ConceptPad.Saving
             Concepts = concepts;
         }
 
-        public async void ReadProfile()
+        public async Task ReadProfileAsync()
         {
             try
             {
@@ -76,7 +72,7 @@ namespace ConceptPad.Saving
         public void AddConcept(Concept concept)
         {
             Concepts.Add(concept);
-            WriteProfile();
+            WriteProfileAsync();
         }
     }
 }
