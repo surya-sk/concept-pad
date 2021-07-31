@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ConceptPad.Models;
 using muxc = Microsoft.UI.Xaml.Controls;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -80,6 +81,12 @@ namespace ConceptPad.Views
             NameInput.Text = string.Empty;
             DescriptionInput.Text = string.Empty;
             ToolsInput.Text = string.Empty;
+        }
+
+        private void ConceptView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            var selectedConcept = (Concept)e.ClickedItem;
+            Frame.Navigate(typeof(ConceptPage), selectedConcept);
         }
     }
 }

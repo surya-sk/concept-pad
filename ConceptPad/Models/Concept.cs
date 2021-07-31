@@ -14,6 +14,7 @@ namespace ConceptPad.Models
     public class Concept : INotifyPropertyChanged
     {
         // Attributes
+        public Guid Id { get; set; }
         private string name;
         private string type;
         private string description;

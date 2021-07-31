@@ -19,9 +19,11 @@
         <Pivot Title="Concept Pad">
             <PivotItem Header="Concepts">
                 <GridView Name="ConceptView"
-                  ItemsSource="{x:Bind concepts}"
-                  SelectionMode="None"
-                  Grid.Row="1">
+                          ItemsSource="{x:Bind concepts}"
+                          IsItemClickEnabled="True"
+                          ItemClick="ConceptView_ItemClick"
+                         SelectionMode="None"
+                        Grid.Row="1">
                     <GridView.ItemTemplate>
                         <DataTemplate x:DataType="data:Concept">
                             <StackPanel Orientation="Vertical">
