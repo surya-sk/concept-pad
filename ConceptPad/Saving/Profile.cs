@@ -68,11 +68,5 @@ namespace ConceptPad.Saving
         {
             return Concepts;
         }
-
-        public void AddConcept(Concept concept)
-        {
-            Concepts.Add(concept);
-            WriteProfileAsync();
-        }
     }
 }
