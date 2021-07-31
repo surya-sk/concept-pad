@@ -74,7 +74,9 @@ namespace ConceptPad.Views
                 };
                 concepts.Add(concept);
                 Profile.GetInstance().SaveSettings(concepts);
-                Profile.GetInstance().WriteProfileAsync();
+                ProgRing.IsActive = true;
+                Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+                ProgRing.IsActive = false;
                 ClearInputs();
             }
         }
@@ -106,6 +108,11 @@ namespace ConceptPad.Views
         private void UnpinButotn_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(SettingsPage));
         }
     }
 }

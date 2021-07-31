@@ -69,7 +69,7 @@
             <AppBarButton x:Name="RefreshButton" Icon="Refresh" Label="Refresh" Click="RefreshButton_Click"/>
             <AppBarButton x:Name="PinButton" Icon="Pin" Label="Pin to Start" Click="PinButton_Click"/>
             <AppBarButton x:Name="UnpinButotn" Icon="UnPin" Label="Unpin" Click="UnpinButotn_Click" Visibility="Collapsed" />
-            <AppBarButton Icon="Setting" Label="Settings" />
+            <AppBarButton x:Name="SettingsButton" Icon="Setting" Label="Settings" Click="SettingsButton_Click"/>
         </CommandBar>
     </Grid>
 </Page>
