@@ -14,6 +14,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ConceptPad.Models;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
+using ConceptPad.Saving;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -25,15 +27,24 @@ namespace ConceptPad.Views
     public sealed partial class ConceptPage : Page
     {
         private Concept concept;
-
+        private ObservableCollection<Concept> concepts;
         public ConceptPage()
         {
+            Profile.GetInstance().ReadProfile();
+            concepts = Profile.GetInstance().GetConcepts();
             this.InitializeComponent();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            concept = (Concept)e.Parameter;
+            Guid selectedId = (Guid)e.Parameter;
+            foreach(Concept c in concepts)
+            {
+                if(selectedId == c.Id)
+                {
+                    concept = c;
+                }
+            }
             base.OnNavigatedTo(e);
         }
 

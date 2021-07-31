@@ -62,7 +62,7 @@
         </Pivot>
         
         <CommandBar Background="Transparent" Grid.Row="2">
-            <AppBarButton Icon="Help" Label="Help" />
+            <AppBarButton x:Name="HelpButton" Icon="Help" Label="Help" Click="HelpButton_Click" />
             <AppBarButton Icon="Setting" Label="Settings" />
         </CommandBar>
     </Grid>

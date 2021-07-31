@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Navigation;
 using ConceptPad.Models;
 using muxc = Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
+using ConceptPad.Saving;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -28,25 +29,23 @@ namespace ConceptPad.Views
     public sealed partial class MainPage : Page
     {
         private ObservableCollection<Concept> concepts;
-        private Concept concept;
+        private string type;
         public MainPage()
         {
-            concepts = new ObservableCollection<Concept>();
-            concept = new Concept();
-            concepts.Add(new Concept { Name = "Name", Type ="Game", Description = "Description", DateCreated = DateTime.Now, IsInProduction = false});
-            concepts.Add(new Concept { Name = "Name2", Type ="Game2", Description = "Description", DateCreated = DateTime.Now, IsInProduction = false});
-            concepts.Add(new Concept { Name = "Name3", Type ="Game3", Description = "Description", DateCreated = DateTime.Now, IsInProduction = false});
-            concepts.Add(new Concept { Name = "Name3", Type ="Game3", Description = "Description", DateCreated = DateTime.Now, IsInProduction = false});
-            concepts.Add(new Concept { Name = "Name3", Type ="Game3", Description = "Description", DateCreated = DateTime.Now, IsInProduction = false});
+            Profile.GetInstance().ReadProfile();
+            concepts = Profile.GetInstance().GetConcepts();
             this.InitializeComponent();
         }
 
+        void Refresh()
+        {
+            Frame.Navigate(typeof(MainPage));
+        }
         private void RadioButtons_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(TypeButtons != null && sender is muxc.RadioButtons rb)
             {
-                string type = rb.SelectedItem as string;
-                concept.Type = type;
+                type = rb.SelectedItem as string;
                 switch(type)
                 {
                     case "Game":
@@ -67,11 +66,17 @@ namespace ConceptPad.Views
             }
             else
             {
-                concept.Name = NameInput.Text;
-                concept.Description = DescriptionInput.Text;
-                concept.Tools = ToolsInput.Text;
-                concept.DateCreated = DateTime.Now;
+                Concept concept = new Concept()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = NameInput.Text,
+                    Description = DescriptionInput.Text,
+                    Type = type,
+                    Tools = ToolsInput.Text
+                };
                 concepts.Add(concept);
+                Profile.GetInstance().SaveSettings(concepts);
+                Profile.GetInstance().WriteProfile();
                 ClearInputs();
             }
         }
@@ -86,7 +91,12 @@ namespace ConceptPad.Views
         private void ConceptView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var selectedConcept = (Concept)e.ClickedItem;
-            Frame.Navigate(typeof(ConceptPage), selectedConcept);
+            Frame.Navigate(typeof(ConceptPage), selectedConcept.Id);
+        }
+
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(MainPage));
         }
     }
 }
