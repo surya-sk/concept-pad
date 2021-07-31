@@ -18,22 +18,25 @@
 
         <Pivot Title="Concept Pad">
             <PivotItem Header="Concepts">
-                <GridView Name="ConceptView"
+                <StackPanel Orientation="Vertical">
+                    <TextBlock x:Name="EmtpyListText" Text="You currently have no concepts. Create one now!" Visibility="Collapsed"/>
+                    <GridView Name="ConceptView"
                           ItemsSource="{x:Bind concepts}"
                           IsItemClickEnabled="True"
                           ItemClick="ConceptView_ItemClick"
                           SelectionMode="None"
                           Grid.Row="1">
-                    <GridView.ItemTemplate>
-                        <DataTemplate x:DataType="data:Concept">
-                            <StackPanel Orientation="Vertical">
-                                <TextBlock x:Name="NameTextBox" Text="{Binding Name}" />
-                                <TextBlock x:Name="TypeTextBox" Text="{Binding Type}" />
-                                <TextBlock x:Name="DateBox" Text="{Binding DateCreated}" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </GridView.ItemTemplate>
-                </GridView>
+                        <GridView.ItemTemplate>
+                            <DataTemplate x:DataType="data:Concept">
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock x:Name="NameTextBox" Text="{Binding Name}" />
+                                    <TextBlock x:Name="TypeTextBox" Text="{Binding Type}" />
+                                    <TextBlock x:Name="DateBox" Text="{Binding DateCreated}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
+                    </GridView>
+                </StackPanel>
             </PivotItem>
             <PivotItem Header="New">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">

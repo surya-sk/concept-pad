@@ -36,6 +36,10 @@ namespace ConceptPad.Views
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             concepts = Profile.GetInstance().GetConcepts();
             this.InitializeComponent();
+            if(concepts.Count == 0)
+            {
+                EmtpyListText.Visibility = Visibility.Visible;
+            }
         }
 
 

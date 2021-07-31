@@ -68,7 +68,7 @@
         </Pivot>
 
         <CommandBar Grid.Row="1">
-            <AppBarButton x:Name="CloseButton" Icon="Clear" Click="CloseButton_Click"/>
+            <AppBarButton x:Name="CloseButton" Icon="Clear" Label="Close" Click="CloseButton_Click"/>
         </CommandBar>
     </Grid>
 </Page>
