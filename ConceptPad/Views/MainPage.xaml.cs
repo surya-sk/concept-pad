@@ -18,6 +18,7 @@ using muxc = Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
 using ConceptPad.Saving;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Media.Animation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -94,7 +95,7 @@ namespace ConceptPad.Views
         private void ConceptView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var selectedConcept = (Concept)e.ClickedItem;
-            Frame.Navigate(typeof(ConceptPage), selectedConcept.Id);
+            Frame.Navigate(typeof(ConceptPage), selectedConcept.Id, new DrillInNavigationTransitionInfo());
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
@@ -115,7 +116,7 @@ namespace ConceptPad.Views
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(SettingsPage));
+            Frame.Navigate(typeof(SettingsPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
         }
     }
 }

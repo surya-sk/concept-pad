@@ -17,6 +17,7 @@ using System.Diagnostics;
 using System.Collections.ObjectModel;
 using ConceptPad.Saving;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Media.Animation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -71,7 +72,7 @@ namespace ConceptPad.Views
                 Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             }
             ProgRing.IsActive = false;
-            Frame.Navigate(typeof(MainPage));
+            Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
         }
 
         private void TitleEditBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -95,7 +96,7 @@ namespace ConceptPad.Views
             concepts.RemoveAt(conceptIndex);
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-            Frame.Navigate(typeof(MainPage));
+            Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
         }
     }
 }

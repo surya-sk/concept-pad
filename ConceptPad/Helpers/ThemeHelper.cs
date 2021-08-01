@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,10 +85,11 @@ namespace ConceptPad.Helpers
             if (CurrentApplicationWindow != null)
             {
                 // Dispatch on UI thread so that we have a current appbar to access and change
-                CurrentApplicationWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
+                
+                Task.Run(async () => await CurrentApplicationWindow.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.High, () =>
                 {
                     UpdateSystemCaptionButtonColors();
-                });
+                })).Wait();
             }
         }
 

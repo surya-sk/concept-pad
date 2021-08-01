@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -14,6 +15,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -36,6 +38,26 @@ namespace ConceptPad.Views
         public SettingsPage()
         {
             this.InitializeComponent();
+            string selectedTheme = (string)ApplicationData.Current.LocalSettings.Values["SelectedAppTheme"];
+            if(selectedTheme == null)
+            {
+                ThemeInput.SelectedIndex = 0;
+            }
+            else
+            {
+                switch(selectedTheme)
+                {
+                    case "Default":
+                        ThemeInput.SelectedIndex = 0;
+                        break;
+                    case "Dark":
+                        ThemeInput.SelectedIndex = 1;
+                        break;
+                    case "Light":
+                        ThemeInput.SelectedIndex = 2;
+                        break;
+                }
+            }
         }
 
         private void ThemeInput_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -53,7 +75,7 @@ namespace ConceptPad.Views
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(MainPage));
+            Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
         }
     }
 }

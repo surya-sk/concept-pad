@@ -50,7 +50,7 @@
                                 <UserControl>
                                     <Grid
                                         x:Name="rootGrid" Width="360" Height="90" Padding="8"
-                                        Background="Transparent" BorderThickness="1" CornerRadius="{StaticResource ControlCornerRadius}">
+                                        BorderThickness="1" CornerRadius="{StaticResource ControlCornerRadius}">
                                         
                                         <VisualStateManager.VisualStateGroups>
                                             <VisualStateGroup x:Name="LayoutVisualStates">
@@ -127,7 +127,7 @@
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Margin="0,0,0,30">
                             <TextBlock x:Name="ToolsText" Text="Tools"/>
-                            <TextBox x:Name="ToolsInput" PlaceholderText="Game Engine, Framework etc" Margin="0,10,0,0" />
+                            <TextBox x:Name="ToolsInput" PlaceholderText="Game Engine, Framework, Languages etc" Margin="0,10,0,0" />
                         </StackPanel>
                         <Button x:Name="CreateButton" Content="Create" Click="CreateButton_Click" Margin="0,0,0,10" />
                         <TextBlock x:Name="ErrorText" Text="Fill in all the fields!" FontStyle="Italic" Foreground="Red" Visibility="Collapsed" />

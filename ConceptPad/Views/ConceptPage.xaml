@@ -10,7 +10,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -73,7 +73,7 @@
                     </Flyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
-            <AppBarButton x:Name="CloseButton" Icon="Clear" Label="Close" Click="CloseButton_Click"/>
+            <AppBarButton x:Name="CloseButton" Icon="Accept" Label="Done" Click="CloseButton_Click"/>
         </CommandBar>
     </Grid>
 </Page>
