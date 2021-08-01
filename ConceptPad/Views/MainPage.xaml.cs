@@ -117,17 +117,6 @@ namespace ConceptPad.Views
             ProgRing.IsActive = true;
             Frame.Navigate(typeof(MainPage));
         }
-
-        private void PinButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void UnpinButotn_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(SettingsPage), null, new DrillInNavigationTransitionInfo());
