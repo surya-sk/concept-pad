@@ -35,6 +35,10 @@ namespace ConceptPad.Views
         {
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             concepts = Profile.GetInstance().GetConcepts();
+            foreach(Concept c in concepts)
+            {
+                c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}.png";
+            }
             this.InitializeComponent();
             if(concepts.Count == 0)
             {
@@ -74,23 +78,18 @@ namespace ConceptPad.Views
                     Name = NameInput.Text,
                     Description = DescriptionInput.Text,
                     Type = type,
-                    Tools = ToolsInput.Text
+                    Tools = ToolsInput.Text,
+                    DateCreated = DateTime.Now.ToString("D")
                 };
                 concepts.Add(concept);
                 Profile.GetInstance().SaveSettings(concepts);
                 ProgRing.IsActive = true;
                 Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
                 ProgRing.IsActive = false;
-                ClearInputs();
+                Frame.Navigate(typeof(MainPage));
             }
         }
 
-        private void ClearInputs()
-        {
-            NameInput.Text = string.Empty;
-            DescriptionInput.Text = string.Empty;
-            ToolsInput.Text = string.Empty;
-        }
 
         private void ConceptView_ItemClick(object sender, ItemClickEventArgs e)
         {

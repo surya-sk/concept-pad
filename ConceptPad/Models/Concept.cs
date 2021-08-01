@@ -15,10 +15,11 @@ namespace ConceptPad.Models
     {
         // Attributes
         public Guid Id { get; set; }
+        public string ImagePath { get; set; }
         private string name;
         private string type;
         private string description;
-        private DateTime dateCreated;
+        private string dateCreated;
         private string tools;
         private bool isInProduction;
 
@@ -52,7 +53,7 @@ namespace ConceptPad.Models
             }
         }
 
-        public DateTime DateCreated
+        public string DateCreated
         {
             get => dateCreated;
             set

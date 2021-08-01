@@ -10,29 +10,99 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Background="{ThemeResource HomePageBackgroundBrush}">
+        
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="LayoutVisualStates">
+                <VisualState x:Name="WideLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint640Plus}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters />
+                </VisualState>
+                <VisualState x:Name="NarrowLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="ConceptView.Padding" Value="12,0,12,36" />
+                        <Setter Target="ConceptView.ItemContainerStyle" Value="{StaticResource GridViewItemStyleSmall}" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Pivot Title="Concept Pad">
+        <Pivot>
             <PivotItem Header="Concepts">
                 <StackPanel Orientation="Vertical">
-                    <TextBlock x:Name="EmtpyListText" Text="You currently have no concepts. Create one now!" Visibility="Collapsed"/>
-                    <GridView Name="ConceptView"
-                          ItemsSource="{x:Bind concepts}"
-                          IsItemClickEnabled="True"
-                          ItemClick="ConceptView_ItemClick"
-                          SelectionMode="None"
-                          Grid.Row="1">
+                    <TextBlock x:Name="EmtpyListText" Text="You currently have no concepts. Create one now!" Visibility="Collapsed"
+                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,200,0,0" FontSize="30"/>
+                    <GridView Name="ConceptView" ItemsSource="{x:Bind concepts}" IsItemClickEnabled="True" ItemClick="ConceptView_ItemClick"
+                              SelectionMode="None" Grid.Row="1" ItemContainerStyle="{StaticResource IndentedGridViewItemStyle}" Margin="0,20,0,0">
                         <GridView.ItemTemplate>
                             <DataTemplate x:DataType="data:Concept">
-                                <StackPanel Orientation="Vertical">
-                                    <TextBlock x:Name="NameTextBox" Text="{Binding Name}" />
-                                    <TextBlock x:Name="TypeTextBox" Text="{Binding Type}" />
-                                    <TextBlock x:Name="DateBox" Text="{Binding DateCreated}" />
-                                </StackPanel>
+                                <UserControl>
+                                    <Grid
+                                        x:Name="rootGrid" Width="360" Height="90" Padding="8"
+                                        Background="Transparent" BorderThickness="1" CornerRadius="{StaticResource ControlCornerRadius}">
+                                        
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="LayoutVisualStates">
+                                                <VisualState x:Name="WideLayout">
+                                                    <VisualState.StateTriggers>
+                                                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint640Plus}" />
+                                                    </VisualState.StateTriggers>
+                                                    <VisualState.Setters />
+                                                </VisualState>
+                                                <VisualState x:Name="NarrowLayout">
+                                                    <VisualState.StateTriggers>
+                                                        <AdaptiveTrigger MinWindowWidth="0" />
+                                                    </VisualState.StateTriggers>
+                                                    <VisualState.Setters>
+                                                        <Setter Target="rootGrid.Width" Value="Auto" />
+                                                        <Setter Target="rootGrid.Height" Value="120" />
+                                                    </VisualState.Setters>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid Background="AliceBlue" Width="70" CornerRadius="{ThemeResource ControlCornerRadius}">
+                                            <Image
+                                                x:Name="gridImage"
+                                                Width="45"
+                                                VerticalAlignment="Center"
+                                                AutomationProperties.Name="{x:Bind Name}"
+                                                Source="{x:Bind ImagePath}"
+                                                Stretch="Uniform" />    
+                                        </Grid>
+
+                                        <RelativePanel Grid.Column="1" Grid.ColumnSpan="2" Margin="16,6,0,0">
+                                            <TextBlock
+                                                x:Name="TitleText"
+                                                Style="{StaticResource BaseTextBlockStyle}"
+                                                Text="{x:Bind Name}"
+                                                TextLineBounds="TrimToCapHeight"
+                                                TextWrapping="NoWrap" />
+                                            <TextBlock
+                                                Style="{StaticResource CaptionTextBlockStyle}"
+                                                Margin="0,2,8,0"
+                                                RelativePanel.Below="TitleText"
+                                                Text="{x:Bind Description}"
+                                                TextTrimming="CharacterEllipsis"/>
+                                        </RelativePanel>
+                                    </Grid>
+                                </UserControl>
                             </DataTemplate>
                         </GridView.ItemTemplate>
                     </GridView>
@@ -43,7 +113,7 @@
                     <StackPanel Orientation="Vertical">
                         <StackPanel Orientation="Vertical" Margin="0,0,0,30">
                             <TextBlock Text="Title" />
-                            <TextBox x:Name="NameInput" PlaceholderText="Enter a tentative title" />
+                            <TextBox x:Name="NameInput" PlaceholderText="Enter a tentative title" Margin="0,10,0,0" />
                         </StackPanel>
                         <muxc:RadioButtons x:Name="TypeButtons" Header="Type" SelectedIndex="0" 
                                        SelectionChanged="RadioButtons_SelectionChanged" MaxColumns="2" Margin="0,0,0,30">
@@ -53,14 +123,14 @@
                         <StackPanel Orientation="Vertical" Margin="0,0,0,30">
                             <TextBlock Text="Description" />
                             <TextBox x:Name="DescriptionInput" PlaceholderText="Enter the story/details of your concept" 
-                                 TextWrapping="Wrap" IsSpellCheckEnabled="True" AcceptsReturn="True" MinHeight="100"/>
+                                 TextWrapping="Wrap" IsSpellCheckEnabled="True" AcceptsReturn="True" MinHeight="100" Margin="0,10,0,0" />
                         </StackPanel>
                         <StackPanel Orientation="Vertical" Margin="0,0,0,30">
                             <TextBlock x:Name="ToolsText" Text="Tools"/>
-                            <TextBox x:Name="ToolsInput" PlaceholderText="Game Engine, Framework etc" />
+                            <TextBox x:Name="ToolsInput" PlaceholderText="Game Engine, Framework etc" Margin="0,10,0,0" />
                         </StackPanel>
                         <Button x:Name="CreateButton" Content="Create" Click="CreateButton_Click" Margin="0,0,0,10" />
-                        <TextBlock x:Name="ErrorText" Text="Fill in all the fields!" FontStyle="Italic" Foreground="Red" Visibility="Collapsed"/>
+                        <TextBlock x:Name="ErrorText" Text="Fill in all the fields!" FontStyle="Italic" Foreground="Red" Visibility="Collapsed" />
                     </StackPanel>
                 </ScrollViewer>
             </PivotItem>
