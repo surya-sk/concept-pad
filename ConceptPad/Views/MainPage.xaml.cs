@@ -19,6 +19,9 @@ using System.Diagnostics;
 using ConceptPad.Saving;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Animation;
+using Microsoft.Toolkit.Uwp.Notifications;
+using Windows.UI.Notifications;
+using Windows.Storage;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -35,12 +38,23 @@ namespace ConceptPad.Views
         public MainPage()
         {
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
-            concepts = Profile.GetInstance().GetConcepts();
+            ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
+            concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated));
             foreach(Concept c in concepts)
             {
                 c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}.png";
             }
             this.InitializeComponent();
+            TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
+            string showLiveTile = ApplicationData.Current.LocalSettings.Values["LiveTileOn"]?.ToString();
+            if (showLiveTile==null || showLiveTile == "True")
+            {
+                foreach (Concept c in concepts)
+                {
+                    UpdateLiveTile(c);
+                }
+            }
+
             if(concepts.Count == 0)
             {
                 EmtpyListText.Visibility = Visibility.Visible;
@@ -117,6 +131,78 @@ namespace ConceptPad.Views
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(SettingsPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+        }
+
+        private void UpdateLiveTile(Concept c)
+        {
+            var tileContent = new TileContent()
+            {
+                Visual = new TileVisual()
+                {
+
+                    TileMedium = new TileBinding()
+                    {
+                        Branding = TileBranding.Name,
+                        DisplayName = "Concept Pad",
+                        Content = new TileBindingContentAdaptive()
+                        {
+                            Children =
+                            {
+                                new AdaptiveText()
+                                {
+                                    Text = c.Name,
+                                    HintWrap = true,
+                                    HintMaxLines = 2
+                                },
+                                new AdaptiveText()
+                                {
+                                    Text = c.Type,
+                                    HintStyle = AdaptiveTextStyle.CaptionSubtle
+                                },
+                                new AdaptiveText()
+                                {
+                                    Text = c.Tools,
+                                    HintStyle = AdaptiveTextStyle.CaptionSubtle
+                                }
+                            }
+                        }
+                    },
+                    TileWide = new TileBinding()
+                    {
+                        Branding = TileBranding.NameAndLogo,
+                        DisplayName = "Concept Pad",
+                        Content = new TileBindingContentAdaptive()
+                        {
+                            Children =
+                            {
+                                new AdaptiveText()
+                                {
+                                    Text = c.Name
+                                },
+                                new AdaptiveText()
+                                {
+                                    Text = c.Type,
+                                    HintStyle = AdaptiveTextStyle.CaptionSubtle
+                                },
+                                new AdaptiveText()
+                                {
+                                    Text = c.Description,
+                                    HintStyle = AdaptiveTextStyle.CaptionSubtle,
+                                    HintMinLines = 2,
+                                    HintMaxLines = 4,
+                                    HintWrap = true
+                                }
+                            }
+                        }
+                    },
+                }
+            };
+
+            // Create the tile notification
+            var tileNotif = new TileNotification(tileContent.GetXml());
+
+            // And send the notification to the primary tile
+            TileUpdateManager.CreateTileUpdaterForApplication().Update(tileNotif);
         }
     }
 }

@@ -77,5 +77,10 @@ namespace ConceptPad.Views
         {
             Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
         }
+
+        private void TileToggle_Toggled(object sender, RoutedEventArgs e)
+        {
+            ApplicationData.Current.LocalSettings.Values["LiveTileOn"] = TileToggle.IsOn.ToString();
+        }
     }
 }
