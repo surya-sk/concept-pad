@@ -8,6 +8,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -58,6 +59,19 @@ namespace ConceptPad.Views
                         break;
                 }
             }
+            var view = SystemNavigationManager.GetForCurrentView();
+            view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            view.BackRequested += View_BackRequested;
+        }
+
+        private void View_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if(Frame.CanGoBack)
+            {
+                Frame.GoBack();
+            }
+
+            e.Handled = true;
         }
 
         private void ThemeInput_SelectionChanged(object sender, SelectionChangedEventArgs e)

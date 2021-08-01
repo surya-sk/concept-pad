@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
 using Windows.Storage;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -37,6 +38,7 @@ namespace ConceptPad.Views
         private string type;
         public MainPage()
         {
+            this.InitializeComponent();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
             concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated));
@@ -44,7 +46,8 @@ namespace ConceptPad.Views
             {
                 c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}.png";
             }
-            this.InitializeComponent();
+            var view = SystemNavigationManager.GetForCurrentView();
+            view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Disabled;
             TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
             string showLiveTile = ApplicationData.Current.LocalSettings.Values["LiveTileOn"]?.ToString();
             if (showLiveTile==null || showLiveTile == "True")

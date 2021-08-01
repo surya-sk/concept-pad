@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using ConceptPad.Saving;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -35,9 +36,24 @@ namespace ConceptPad.Views
         private int conceptIndex;
         public ConceptPage()
         {
-            Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
-            concepts = Profile.GetInstance().GetConcepts();
             this.InitializeComponent();
+            ProgRing.IsActive = true;
+            Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
+            ProgRing.IsActive = false;
+            concepts = Profile.GetInstance().GetConcepts();
+            var view = SystemNavigationManager.GetForCurrentView();
+            view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            view.BackRequested += View_BackRequested;
+
+        }
+
+        private void View_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if(Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
+            e.Handled = true;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
