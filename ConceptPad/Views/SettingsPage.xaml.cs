@@ -1,10 +1,13 @@
-﻿using System;
+﻿using ConceptPad.Helpers;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -37,7 +40,15 @@ namespace ConceptPad.Views
 
         private void ThemeInput_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            var selectedTheme = e.AddedItems[0].ToString();
+            if(selectedTheme!=null)
+            {
+                if(selectedTheme == "System")
+                {
+                    selectedTheme = "Default";
+                }
+                ThemeHelper.RootTheme = App.GetEnum<ElementTheme>(selectedTheme);
+            }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

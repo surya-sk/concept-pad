@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ConceptPad.Views;
+using System.Reflection;
+using ConceptPad.Helpers;
 
 namespace ConceptPad
 {
@@ -33,6 +35,15 @@ namespace ConceptPad
             this.Suspending += OnSuspending;
         }
 
+        public static TEnum GetEnum<TEnum>(string text) where TEnum : struct
+        {
+            if (!typeof(TEnum).GetTypeInfo().IsEnum)
+            {
+                throw new InvalidOperationException("Generic parameter 'TEnum' must be an enum.");
+            }
+            return (TEnum)Enum.Parse(typeof(TEnum), text);
+        }
+
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
@@ -42,6 +53,8 @@ namespace ConceptPad
         {
             Frame rootFrame = Window.Current.Content as Frame;
 
+            ThemeHelper.Initialize();
+            
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
             if (rootFrame == null)
