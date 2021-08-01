@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 using ConceptPad.Views;
 using System.Reflection;
 using ConceptPad.Helpers;
+using System.Diagnostics;
 
 namespace ConceptPad
 {
@@ -52,8 +53,6 @@ namespace ConceptPad
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
             Frame rootFrame = Window.Current.Content as Frame;
-
-            ThemeHelper.Initialize();
             
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
@@ -85,6 +84,8 @@ namespace ConceptPad
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
+
+            EnsureWindow(e);
         }
 
         /// <summary>
@@ -109,6 +110,45 @@ namespace ConceptPad
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            EnsureWindow(args);
+
+            base.OnActivated(args);
+        }
+
+        private void EnsureWindow(IActivatedEventArgs args)
+        {
+            Frame rootFrame = GetRootFrame();
+            ThemeHelper.Initialize();
+
+            rootFrame.Navigate(typeof(MainPage));
+        }
+
+        private Frame GetRootFrame()
+        {
+            Frame rootFrame;
+            if (!(Window.Current.Content is MainPage rootPage))
+            {
+                rootPage = new MainPage();
+                rootFrame = (Frame)rootPage.FindName("rootFrame");
+                if (rootFrame == null)
+                {
+                    throw new Exception("Root frame not found");
+                }
+                rootFrame.Language = Windows.Globalization.ApplicationLanguages.Languages[0];
+                rootFrame.NavigationFailed += OnNavigationFailed;
+
+                Window.Current.Content = rootPage;
+            }
+            else
+            {
+                rootFrame = (Frame)rootPage.FindName("rootFrame");
+            }
+
+            return rootFrame;
         }
     }
 }

@@ -68,7 +68,6 @@ namespace ConceptPad.Helpers
             // Save reference as this might be null when the user is in another app
             CurrentApplicationWindow = Window.Current;
             string savedTheme = ApplicationData.Current.LocalSettings.Values[SelectedAppThemeKey]?.ToString();
-
             if (savedTheme != null)
             {
                 RootTheme = ConceptPad.App.GetEnum<ElementTheme>(savedTheme);
