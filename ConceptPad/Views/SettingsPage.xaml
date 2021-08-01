@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -24,8 +24,6 @@
                             <x:String>Dark</x:String>
                             <x:String>Light</x:String>
                         </ComboBox>
-
-                        <ToggleSwitch Header="Transparency effects" OffContent="Off" OnContent="On" Margin="0,20,0,20" IsOn="True" FontSize="15"/>
 
                         <ToggleSwitch Header="Live Tile (Windows 10 only)" OffContent="Off" OnContent="On" Margin="0,20,0,20" IsOn="True" FontSize="15"/>
 
