@@ -109,7 +109,7 @@ namespace ConceptPad.Views
         private void ConceptView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var selectedConcept = (Concept)e.ClickedItem;
-            Frame.Navigate(typeof(ConceptPage), selectedConcept.Id, new DrillInNavigationTransitionInfo());
+            Frame.Navigate(typeof(ConceptPage), selectedConcept.Id, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
@@ -130,7 +130,7 @@ namespace ConceptPad.Views
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(SettingsPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+            Frame.Navigate(typeof(SettingsPage), null, new DrillInNavigationTransitionInfo());
         }
 
         private void UpdateLiveTile(Concept c)

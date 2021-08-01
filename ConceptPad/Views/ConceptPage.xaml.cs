@@ -72,7 +72,7 @@ namespace ConceptPad.Views
                 Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             }
             ProgRing.IsActive = false;
-            Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+            Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
         }
 
         private void TitleEditBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -96,7 +96,7 @@ namespace ConceptPad.Views
             concepts.RemoveAt(conceptIndex);
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-            Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+            Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
         }
     }
 }

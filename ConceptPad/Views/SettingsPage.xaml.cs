@@ -75,7 +75,7 @@ namespace ConceptPad.Views
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+            Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
         }
 
         private void TileToggle_Toggled(object sender, RoutedEventArgs e)
