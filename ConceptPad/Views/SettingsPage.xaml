@@ -14,17 +14,22 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Pivot Title="Settings + More">
+        <Pivot>
             <PivotItem Header="Settings">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Orientation="Vertical">
-                        <ComboBox x:Name="ThemeInput" SelectionChanged="ThemeInput_SelectionChanged" Header="Theme" Margin="0,0,0,20">
+                        <ComboBox x:Name="ThemeInput" SelectionChanged="ThemeInput_SelectionChanged" Header="Application Theme" Margin="0,20,0,20"
+                                  SelectedIndex="0" MinWidth="30" FontSize="15">
                             <x:String>System</x:String>
                             <x:String>Dark</x:String>
                             <x:String>Light</x:String>
                         </ComboBox>
 
-                        <TextBlock Text="Related Settings" FontSize="40" Margin="0,0,20,20"/>
+                        <ToggleSwitch Header="Transparency effects" OffContent="Off" OnContent="On" Margin="0,20,0,20" IsOn="True" FontSize="15"/>
+
+                        <ToggleSwitch Header="Live Tile (Windows 10 only)" OffContent="Off" OnContent="On" Margin="0,20,0,20" IsOn="True" FontSize="15"/>
+
+                        <TextBlock Text="Related Settings" FontSize="20" Margin="0,0,20,20"/>
                         <TextBlock TextWrapping="Wrap">
                         <Hyperlink NavigateUri="ms-settings:colors">
                             <Run Text="Windows colour settings"/>
@@ -35,33 +40,98 @@
             </PivotItem>
 
             <PivotItem Header="About">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="Concept Pad" FontSize="40"/>
-                    <TextBlock Text="Version: 1.0.0" FontWeight="ExtraLight"/>
-                    <TextBlock Text="This app is free and open-source. The app will always be free." TextWrapping="Wrap"/>
-                    <TextBlock TextWrapping="Wrap" Margin="0,20,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Concept Pad" FontSize="40"/>
+                        <TextBlock FontWeight="ExtraLight" IsTextSelectionEnabled="True">
+                        Version:
+                        <Run Text="{x:Bind Version}" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock Style="{StaticResource BodyTextBlockStyle}" TextWrapping="Wrap" Margin="0,20,0,20" FontSize="15">
+                        This app is and will always be free. The app is also open-source, and the source code is available 
+                        on Github.
+                        This app does not collect any usage or personal information.
+                        </TextBlock>
+
+                        <TextBlock Text="Useful Links" Margin="0,20,0,10" Style="{StaticResource BaseTextBlockStyle}" FontSize="20" FontWeight="SemiBold" />
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">
                         <Hyperlink NavigateUri="https://github.com/surya-sk/concept-pad">
                             <Run Text="Github repository for this app" />
                         </Hyperlink>
-                    </TextBlock>
-                </StackPanel>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">
+                        <Hyperlink NavigateUri="https://discord.com/invite/eBHZSKG">
+                            <Run Text="UWP Community Discord server" />
+                        </Hyperlink>
+                        </TextBlock>
+
+                        <TextBlock Text="References and Dependencies" Margin="0,20,0,10" Style="{StaticResource BaseTextBlockStyle}" FontSize="20" FontWeight="SemiBold" />
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">
+                        <Hyperlink NavigateUri="https://aka.ms/winui">
+                            <Run Text="Windows UI Library" />
+                        </Hyperlink>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">
+                        <Hyperlink NavigateUri="https://github.com/microsoft/Xaml-Controls-Gallery">
+                            <Run Text="XAML Controls Library" />
+                        </Hyperlink>
+                        </TextBlock>
+
+                        <TextBlock Text="About me" Margin="0,20,0,10" Style="{StaticResource BaseTextBlockStyle}" FontSize="20" FontWeight="SemiBold" />
+                        <TextBlock Margin="0,10,0,10" Style="{StaticResource BodyTextBlockStyle}" FontSize="15" TextWrapping="Wrap">
+                            Hi, I'm Surya. I am a 3rd year Computer Science student. I live in Canada. I like making apps and video games.
+                            Check out my profiles and other projects below, if you like :). 
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">
+                        <Hyperlink NavigateUri="https://www.linkedin.com/in/surya-kashyap/">
+                            <Run Text="Connect with me on LinkedIn" />
+                        </Hyperlink>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">
+                        <Hyperlink NavigateUri="https://twitter.com/Surya89962336">
+                            <Run Text="Follow me on Twitter" />
+                        </Hyperlink>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">
+                        <Hyperlink NavigateUri="https://github.com/surya-sk">
+                            <Run Text="My GitHub profile" />
+                        </Hyperlink>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">
+                        <Hyperlink NavigateUri="https://www.microsoft.com/en-us/p/theseus-the-descent/9nwzzffbw70t?activetab=pivot:overviewtab">
+                            <Run Text="Check out my first game on PC or Xbox" />
+                        </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
             </PivotItem>
 
             <PivotItem Header="Help">
                 <StackPanel Orientation="Vertical">
-                    <TextBlock Text="If you have any suggestions or complaints, please do not hesitate to reach out to me. For bugs, either send create an issue on Github, or send me an email."
-                               TextWrapping="Wrap"
-                               Margin="0,0,0,20"/>
-                    <TextBlock TextWrapping="Wrap" Margin="0,0,0,20">
+                    <TextBlock
+                        TextWrapping="Wrap" FontSize="15"
+                        Margin="0,20,0,20">
+                        Have complaints, bug reports or feedback? That's great! Either create an issue on GitHub or send me an email (links below). 
+                        When reporting bugs, please include version number, a detailed description of the issue and steps to reproduce.
+                    </TextBlock>
+                    
+                    <TextBlock TextWrapping="Wrap" Margin="0,20,0,10">
                         <Hyperlink NavigateUri="mailto:surya.sk05@outlook.com">
-                            <Run Text="Send email" />
+                            <Run Text="Send me an email" />
                         </Hyperlink>
                     </TextBlock>
 
-                    <TextBlock TextWrapping="Wrap" Margin="0,20,0,0">
+                    <TextBlock TextWrapping="Wrap" Margin="0,10,0,0">
                         <Hyperlink NavigateUri="https://github.com/surya-sk/concept-pad/issues">
-                            <Run Text="Create an issue on Github" />
+                            <Run Text="Create an issue on GitHub" />
                         </Hyperlink>
+                    </TextBlock>
+
+                    <TextBlock
+                        TextWrapping="Wrap" FontSize="15"
+                        Margin="0,20,0,20">
+                        Please feel free to leave a rating and a review on the Microsoft Store for feedback, 
+                        but please report bugs as mentioned above rather than the Store.
                     </TextBlock>
                 </StackPanel>
             </PivotItem>

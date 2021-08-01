@@ -23,17 +23,17 @@
                         <DataTemplate x:DataType="data:Concept">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Orientation="Vertical">
-                                    <TextBlock x:Name="TitleText" Text="{Binding Name}" FontSize="30" FontWeight="SemiBold" Margin="0,0,0,20"
+                                    <TextBlock x:Name="TitleText" Text="{Binding Name}" FontSize="30" FontWeight="Bold" Margin="0,0,0,20"
                                                Style="{StaticResource BaseTextBlockStyle}"/>
-                                    <TextBlock Text="Type" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="Bold" FontSize="18" />
+                                    <TextBlock Text="Type" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18" />
                                     <TextBlock Text="{Binding Type}" Margin="0,0,0,20" Style="{StaticResource CaptionTextBlockStyle}" FontSize="18" />
-                                    <TextBlock Text="Description" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="Bold" FontSize="18"  />
+                                    <TextBlock Text="Description" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18"  />
                                     <TextBlock x:Name="DescriptionText" Text="{Binding Description}" Margin="0,0,0,20" Style="{StaticResource BodyTextBlockStyle}"
                                                TextWrapping="Wrap" FontSize="18" />
-                                    <TextBlock Text="Built using" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="Bold" FontSize="18" />
+                                    <TextBlock Text="Built using" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18" />
                                     <TextBlock x:Name="ToolsText" Text="{Binding Tools}"  Margin="0,0,0,20" Style="{StaticResource CaptionTextBlockStyle}"
                                                FontSize="18" />
-                                    <TextBlock Text="Created on" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="Bold" FontSize="18" />
+                                    <TextBlock Text="Created on" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18" />
                                     <TextBlock x:Name="DateText" Text="{Binding DateCreated}"  Margin="0,0,0,20" Style="{StaticResource CaptionTextBlockStyle}"
                                                FontSize="18" />
                                 </StackPanel>

@@ -22,6 +22,14 @@ namespace ConceptPad.Views
     /// </summary>
     public sealed partial class SettingsPage : Page
     {
+        public string Version
+        {
+            get
+            {
+                var version = Windows.ApplicationModel.Package.Current.Id.Version;
+                return string.Format("{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.Revision);
+            }
+        }
         public SettingsPage()
         {
             this.InitializeComponent();
