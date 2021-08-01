@@ -1,23 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ConceptPad.Views;
 using System.Reflection;
 using ConceptPad.Helpers;
-using System.Diagnostics;
 
 namespace ConceptPad
 {
@@ -85,7 +74,7 @@ namespace ConceptPad
                 Window.Current.Activate();
             }
 
-            EnsureWindow(e);
+            InitFrame(e);
         }
 
         /// <summary>
@@ -114,12 +103,16 @@ namespace ConceptPad
 
         protected override void OnActivated(IActivatedEventArgs args)
         {
-            EnsureWindow(args);
+            InitFrame(args);
 
             base.OnActivated(args);
         }
 
-        private void EnsureWindow(IActivatedEventArgs args)
+        /// <summary>
+        /// Initialized root frame and navigates to the main page
+        /// </summary>
+        /// <param name="args"></param>
+        private void InitFrame(IActivatedEventArgs args)
         {
             Frame rootFrame = GetRootFrame();
             ThemeHelper.Initialize();
@@ -127,6 +120,10 @@ namespace ConceptPad
             rootFrame.Navigate(typeof(MainPage));
         }
 
+        /// <summary>
+        /// Gets the root frame. Used for setting the app theme at launch
+        /// </summary>
+        /// <returns>The root frame</returns>
         private Frame GetRootFrame()
         {
             Frame rootFrame;

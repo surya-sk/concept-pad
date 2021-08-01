@@ -1,21 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using ConceptPad.Models;
 using muxc = Microsoft.UI.Xaml.Controls;
-using System.Diagnostics;
 using ConceptPad.Saving;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Animation;
@@ -31,7 +20,7 @@ namespace ConceptPad.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    
+
     public sealed partial class MainPage : Page
     {
         private ObservableCollection<Concept> concepts;
@@ -41,13 +30,17 @@ namespace ConceptPad.Views
             this.InitializeComponent();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
-            concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated));
+            concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
             foreach(Concept c in concepts)
             {
                 c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}.png";
             }
+
+            // disable back button
             var view = SystemNavigationManager.GetForCurrentView();
             view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Disabled;
+
+            // Set tile notification queue
             TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
             string showLiveTile = ApplicationData.Current.LocalSettings.Values["LiveTileOn"]?.ToString();
             if (showLiveTile==null || showLiveTile == "True")
@@ -90,24 +83,31 @@ namespace ConceptPad.Views
             }
             else
             {
-                Concept concept = new Concept()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = NameInput.Text,
-                    Description = DescriptionInput.Text,
-                    Type = type,
-                    Tools = ToolsInput.Text,
-                    DateCreated = DateTime.Now.ToString("D")
-                };
-                concepts.Add(concept);
-                Profile.GetInstance().SaveSettings(concepts);
-                ProgRing.IsActive = true;
-                Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-                ProgRing.IsActive = false;
+                CreateAndAddConcept();
                 Frame.Navigate(typeof(MainPage));
             }
         }
 
+        /// <summary>
+        /// Create a concept and add it to the list, then write it to the save file
+        /// </summary>
+        private void CreateAndAddConcept()
+        {
+            Concept concept = new Concept()
+            {
+                Id = Guid.NewGuid(),
+                Name = NameInput.Text,
+                Description = DescriptionInput.Text,
+                Type = type,
+                Tools = ToolsInput.Text,
+                DateCreated = DateTime.Now.ToString("D")
+            };
+            concepts.Add(concept);
+            Profile.GetInstance().SaveSettings(concepts);
+            ProgRing.IsActive = true;
+            Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+            ProgRing.IsActive = false;
+        }
 
         private void ConceptView_ItemClick(object sender, ItemClickEventArgs e)
         {
@@ -125,6 +125,10 @@ namespace ConceptPad.Views
             Frame.Navigate(typeof(SettingsPage), null, new DrillInNavigationTransitionInfo());
         }
 
+        /// <summary>
+        /// Update the live tile to show concepts based on the notification queue
+        /// </summary>
+        /// <param name="c"></param>
         private void UpdateLiveTile(Concept c)
         {
             var tileContent = new TileContent()

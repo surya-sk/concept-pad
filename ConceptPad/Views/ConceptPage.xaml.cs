@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using ConceptPad.Models;
-using System.Diagnostics;
 using System.Collections.ObjectModel;
 using ConceptPad.Saving;
 using System.Threading.Tasks;
@@ -41,6 +30,7 @@ namespace ConceptPad.Views
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ProgRing.IsActive = false;
             concepts = Profile.GetInstance().GetConcepts();
+            // make the back button visible
             var view = SystemNavigationManager.GetForCurrentView();
             view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
             view.BackRequested += View_BackRequested;
@@ -70,6 +60,11 @@ namespace ConceptPad.Views
             base.OnNavigatedTo(e);
         }
 
+        /// <summary>
+        /// If concept has been edited, save it. Navigate to main page regardless.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             ProgRing.IsActive = true;
@@ -106,6 +101,11 @@ namespace ConceptPad.Views
             edited = true;
         }
 
+        /// <summary>
+        /// Delete a concept after confirmation
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
         {
             ProgRing.IsActive = true;

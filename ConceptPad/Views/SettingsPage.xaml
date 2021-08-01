@@ -9,10 +9,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
 
         <Pivot>
             <PivotItem Header="Settings">
@@ -79,7 +75,7 @@
                         <TextBlock Text="About me" Margin="0,20,0,10" Style="{StaticResource BaseTextBlockStyle}" FontSize="20" FontWeight="SemiBold" />
                         <TextBlock Margin="0,10,0,10" Style="{StaticResource BodyTextBlockStyle}" FontSize="15" TextWrapping="Wrap">
                             Hi, I'm Surya. I am a 3rd year Computer Science student. I live in Canada. I like making apps and video games.
-                            Check out my profiles and other projects below, if you like :). 
+                            Check out my profiles and other projects below, if you like :).
                         </TextBlock>
                         <TextBlock TextWrapping="Wrap" Margin="0,10,0,10">
                         <Hyperlink NavigateUri="https://www.linkedin.com/in/surya-kashyap/">
@@ -113,7 +109,7 @@
                         Have complaints, bug reports or feedback? That's great! Either create an issue on GitHub or send me an email (links below). 
                         When reporting bugs, please include version number, a detailed description of the issue and steps to reproduce.
                     </TextBlock>
-                    
+
                     <TextBlock TextWrapping="Wrap" Margin="0,20,0,10">
                         <Hyperlink NavigateUri="mailto:surya.sk05@outlook.com">
                             <Run Text="Send me an email" />
@@ -135,9 +131,5 @@
                 </StackPanel>
             </PivotItem>
         </Pivot>
-
-        <CommandBar Grid.Row="1">
-            <AppBarButton x:Name="CloseButton" Icon="Clear" Label="Close" Click="CloseButton_Click"/>
-        </CommandBar>
     </Grid>
 </Page>

@@ -28,16 +28,10 @@ namespace ConceptPad.Saving
             return instance;
         }
 
-        void InitHandlers()
-        {
-            ApplicationData.Current.DataChanged += new Windows.Foundation.TypedEventHandler<ApplicationData, object>(DataChangeHandler);
-        }
-
-        void DataChangeHandler(ApplicationData appData, object e)
-        {
-            SaveSettings(Concepts);
-        }
-
+        /// <summary>
+        /// Write the concept list in JSON format
+        /// </summary>
+        /// <returns></returns>
         public async Task WriteProfileAsync()
         {
             string json = JsonConvert.SerializeObject(Concepts);
@@ -50,6 +44,10 @@ namespace ConceptPad.Saving
             Concepts = concepts;
         }
 
+        /// <summary>
+        /// Read the concept list in JSON and deserialze it 
+        /// </summary>
+        /// <returns></returns>
         public async Task ReadProfileAsync()
         {
             try
