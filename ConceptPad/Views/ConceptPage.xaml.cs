@@ -139,8 +139,10 @@ namespace ConceptPad.Views
         {
             DataRequest request = args.Request;
             string concpetData = $"{concept.Name}\n\n" +
-                $"Description:\n {concept.Description}\n\n" +
-                $"Tools:\n {concept.Tools}\n\n" +
+                $"Description:\n{concept.Description}\n\n" +
+                $"Tools:\n{concept.Tools}\n\n" +
+                $"Platform(s):\n{concept.Platforms}\n\n" +
+                $"Genre(s):\n {concept.Genres}\n\n" +
                 $"Concept created and shared via Concept Pad. Get it free from the Microsoft Store: https://www.microsoft.com/store/apps/9N9CV4TS3VB1";
             request.Data.SetText(concpetData);
             request.Data.Properties.Title = $"Share {concept.Name}";
