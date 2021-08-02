@@ -8,6 +8,7 @@ using ConceptPad.Saving;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Core;
+using Windows.ApplicationModel.DataTransfer;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -113,6 +114,25 @@ namespace ConceptPad.Views
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+        }
+
+        private void ShareButton_Click(object sender, RoutedEventArgs e)
+        {
+            DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
+            dataTransferManager.DataRequested += DataTransferManager_DataRequested;
+            DataTransferManager.ShowShareUI();
+        }
+
+        private void DataTransferManager_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
+        {
+            DataRequest request = args.Request;
+            string concpetData = $"{concept.Name}\n\n" +
+                $"Description:\n {concept.Description}\n\n" +
+                $"Tools:\n {concept.Tools}\n\n" +
+                $"Concept created and shared via Concept Pad. Get it free from the Microsoft Store.";
+            request.Data.SetText(concpetData);
+            request.Data.Properties.Title = $"Share {concept.Name}";
+            request.Data.Properties.Description = "Share this concept, its description and tools.";
         }
     }
 }

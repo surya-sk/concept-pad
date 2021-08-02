@@ -141,6 +141,7 @@
 
             <CommandBar Background="Transparent" Grid.Row="2">
                 <AppBarButton x:Name="RefreshButton" Icon="Refresh" Label="Refresh" Click="RefreshButton_Click"/>
+                <AppBarButton x:Name="ShareButton" Icon="Share" Label="Share app" Click="ShareButton_Click" />
                 <AppBarButton x:Name="SettingsButton" Icon="Setting" Label="Settings" Click="SettingsButton_Click"/>
             </CommandBar>
 

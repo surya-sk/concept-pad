@@ -12,6 +12,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using Windows.UI.Notifications;
 using Windows.Storage;
 using Windows.UI.Core;
+using Windows.ApplicationModel.DataTransfer;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -226,6 +227,21 @@ namespace ConceptPad.Views
 
             // And send the notification to the primary tile
             TileUpdateManager.CreateTileUpdaterForApplication().Update(tileNotif);
+        }
+
+        private void ShareButton_Click(object sender, RoutedEventArgs e)
+        {
+            DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
+            dataTransferManager.DataRequested += DataTransferManager_DataRequested;
+            DataTransferManager.ShowShareUI();
+        }
+
+        private void DataTransferManager_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
+        {
+            DataRequest request = args.Request;
+            request.Data.SetApplicationLink(BaseUri);
+            request.Data.Properties.Title = "Link to Concept Pad";
+            request.Data.Properties.Description = "Send the link to download Concept Pad";
         }
     }
 }
