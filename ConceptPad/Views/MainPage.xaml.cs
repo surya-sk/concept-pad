@@ -58,6 +58,11 @@ namespace ConceptPad.Views
             }
         }
 
+
+        /// <summary>
+        /// Get the current app theme. Used for choosing the right icons
+        /// </summary>
+        /// <returns>a string representing current app theme</returns>
         private static string GetTheme()
         {
             string savedTheme = ApplicationData.Current.LocalSettings.Values["SelectedAppTheme"]?.ToString();

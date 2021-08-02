@@ -21,8 +21,13 @@
                             <x:String>Light</x:String>
                         </ComboBox>
 
-                        <ToggleSwitch x:Name="TileToggle" Header="Live Tile (Windows 10 only)" OffContent="Off" OnContent="On" Margin="0,20,0,20" IsOn="True" FontSize="15" 
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="Live tile" Margin="0,20,0,0" FontSize="15"/>
+                            <TextBlock Text="Pin the app to start to see a live tile. Available on Windows 10 only." FontStyle="Italic" 
+                                       FontWeight="ExtraLight"/>
+                            <ToggleSwitch x:Name="TileToggle" OffContent="Off" OnContent="On" Margin="0,10,0,20" IsOn="True" FontSize="15" 
                                       Toggled="TileToggle_Toggled"/>
+                        </StackPanel>
 
                         <TextBlock Text="Related Settings" FontSize="20" Margin="0,0,20,20"/>
                         <TextBlock TextWrapping="Wrap">
