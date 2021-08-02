@@ -38,6 +38,16 @@ namespace ConceptPad.Views
                 c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}-{theme}.png";
             }
 
+            string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
+            if (cmdLabelPref == null || cmdLabelPref == "No")
+            {
+                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Bottom;
+            }
+            else
+            {
+                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Right;
+            }
+
             // disable back button
             var view = SystemNavigationManager.GetForCurrentView();
             view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Disabled;

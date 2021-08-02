@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Core;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -35,6 +36,15 @@ namespace ConceptPad.Views
             var view = SystemNavigationManager.GetForCurrentView();
             view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
             view.BackRequested += View_BackRequested;
+            string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
+            if(cmdLabelPref==null || cmdLabelPref == "No")
+            {
+                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Bottom;
+            }
+            else
+            {
+                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Right;
+            }
 
         }
 

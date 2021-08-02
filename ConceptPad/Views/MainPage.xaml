@@ -147,7 +147,7 @@
 
             <muxc:ProgressRing x:Name="ProgRing" IsActive="False" />
 
-            <CommandBar Background="Transparent" Grid.Row="2">
+            <CommandBar x:Name="CmdBar" Background="Transparent" Grid.Row="2">
                 <AppBarButton x:Name="RefreshButton" Icon="Refresh" Label="Refresh" Click="RefreshButton_Click"/>
                 <AppBarButton x:Name="RateButton" Icon="LikeDislike" Label="Rate" Click="RateButton_Click" />
                 <AppBarButton x:Name="SettingsButton" Icon="Setting" Label="Settings" Click="SettingsButton_Click"/>

@@ -143,6 +143,9 @@
     <Content Include="Assets\app-light.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\cmd-bar.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Assets\game-dark.png" />
     <Content Include="Assets\game-light.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
