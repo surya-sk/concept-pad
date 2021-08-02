@@ -9,7 +9,7 @@
   <Identity
     Name="37533SuryaKashyap.ConceptPad"
     Publisher="CN=7115D965-9BEF-4D32-9397-2F0F733B3D6D"
-    Version="1.0.0.0" />
+    Version="1.0.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="7449f6c9-66d2-46ce-80a9-dfc6f8402d59" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

@@ -43,7 +43,7 @@
                 <PivotItem Header="My Concepts">
                     <StackPanel Orientation="Vertical">
                         <TextBlock x:Name="EmtpyListText" Text="You currently have no concepts. Create one now!" Visibility="Collapsed"
-                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,200,0,0" FontSize="30"/>
+                               HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,200,0,0" FontSize="30" TextWrapping="Wrap"/>
                         <GridView Name="ConceptView" ItemsSource="{x:Bind concepts}" IsItemClickEnabled="True" ItemClick="ConceptView_ItemClick"
                               SelectionMode="None" Grid.Row="1" ItemContainerStyle="{StaticResource IndentedGridViewItemStyle}" Margin="0,20,0,0">
                             <GridView.ItemTemplate>
@@ -78,7 +78,8 @@
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
 
-                                            <Grid Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}" Width="70" CornerRadius="{ThemeResource ControlCornerRadius}">
+                                            <Grid Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}" Width="70" 
+                                                  CornerRadius="{ThemeResource ControlCornerRadius}">
                                                 <Image
                                                 x:Name="gridImage"
                                                 Width="45"
