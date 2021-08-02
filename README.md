@@ -21,4 +21,4 @@ PRs are welcome! Make sure you create a new branch when making changes and pushi
 Please report any bugs in the Issues section. Include your OS, app version, a detailed description and steps to reproduce in the bug report.
 
 ## License 
-This project is licensed under the GNU General Public License 3. Check LICENSE.md for more information.
+This project is licensed under the GNU General Public License 3. Check LICENSE for more information.
