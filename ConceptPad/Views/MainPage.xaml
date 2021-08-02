@@ -40,7 +40,7 @@
             </Grid.RowDefinitions>
 
             <Pivot>
-                <PivotItem Header="Concepts">
+                <PivotItem Header="My Concepts">
                     <StackPanel Orientation="Vertical">
                         <TextBlock x:Name="EmtpyListText" Text="You currently have no concepts. Create one now!" Visibility="Collapsed"
                                HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,200,0,0" FontSize="30"/>
@@ -109,7 +109,7 @@
                         </GridView>
                     </StackPanel>
                 </PivotItem>
-                <PivotItem Header="New">
+                <PivotItem Header="Create">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Vertical" Margin="0,0,0,30">
