@@ -139,10 +139,12 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\app.png">
+    <Content Include="Assets\app-dark.png" />
+    <Content Include="Assets\app-light.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\game.png">
+    <Content Include="Assets\game-dark.png" />
+    <Content Include="Assets\game-light.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Properties\Default.rd.xml" />

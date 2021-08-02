@@ -31,9 +31,10 @@ namespace ConceptPad.Views
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
             concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
-            foreach(Concept c in concepts)
+            string theme = GetTheme();
+            foreach (Concept c in concepts)
             {
-                c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}.png";
+                c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}-{theme}.png";
             }
 
             // disable back button
@@ -43,7 +44,7 @@ namespace ConceptPad.Views
             // Set tile notification queue
             TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
             string showLiveTile = ApplicationData.Current.LocalSettings.Values["LiveTileOn"]?.ToString();
-            if (showLiveTile==null || showLiveTile == "True")
+            if (showLiveTile == null || showLiveTile == "True")
             {
                 foreach (Concept c in concepts)
                 {
@@ -51,12 +52,33 @@ namespace ConceptPad.Views
                 }
             }
 
-            if(concepts.Count == 0)
+            if (concepts.Count == 0)
             {
                 EmtpyListText.Visibility = Visibility.Visible;
             }
         }
 
+        private static string GetTheme()
+        {
+            string savedTheme = ApplicationData.Current.LocalSettings.Values["SelectedAppTheme"]?.ToString();
+            string theme = string.Empty;
+            if (savedTheme == null || savedTheme == "Default")
+            {
+                var defautlTheme = new Windows.UI.ViewManagement.UISettings();
+                var uiTheme = defautlTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString();
+                if (uiTheme == "FF000000")
+                {
+                    savedTheme = "Dark";
+                }
+                else
+                {
+                    savedTheme = "Light";
+                }
+            }
+            theme = savedTheme;
+
+            return theme.ToLower();
+        }
 
         private void RadioButtons_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
