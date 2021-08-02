@@ -78,6 +78,8 @@ namespace ConceptPad.Views
                         c.Name = concept.Name;
                         c.Description = concept.Description;
                         c.Tools = concept.Tools;
+                        c.Genres = concept.Genres;
+                        c.Platforms = concept.Platforms;
                     }
                 }
                 Profile.GetInstance().SaveSettings(concepts);
@@ -129,10 +131,20 @@ namespace ConceptPad.Views
             string concpetData = $"{concept.Name}\n\n" +
                 $"Description:\n {concept.Description}\n\n" +
                 $"Tools:\n {concept.Tools}\n\n" +
-                $"Concept created and shared via Concept Pad. Get it free from the Microsoft Store.";
+                $"Concept created and shared via Concept Pad. Get it free from the Microsoft Store: https://www.microsoft.com/store/apps/9N9CV4TS3VB1";
             request.Data.SetText(concpetData);
             request.Data.Properties.Title = $"Share {concept.Name}";
             request.Data.Properties.Description = "Share this concept, its description and tools.";
+        }
+
+        private void GenresEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            edited = true;
+        }
+
+        private void PlatformsEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            edited = true;
         }
     }
 }

@@ -105,7 +105,7 @@ namespace ConceptPad.Views
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
-            if(string.IsNullOrEmpty(NameInput.Text) || string.IsNullOrEmpty(DescriptionInput.Text) || string.IsNullOrEmpty(ToolsInput.Text))
+            if(string.IsNullOrEmpty(NameInput.Text) || string.IsNullOrEmpty(DescriptionInput.Text) || string.IsNullOrEmpty(ToolsInput.Text) || string.IsNullOrEmpty(GenresInput.Text) || string.IsNullOrEmpty(PlatformsInput.Text))
             {
                 ErrorText.Visibility = Visibility.Visible;
             }
@@ -128,6 +128,8 @@ namespace ConceptPad.Views
                 Description = DescriptionInput.Text,
                 Type = type,
                 Tools = ToolsInput.Text,
+                Genres = GenresInput.Text,
+                Platforms = PlatformsInput.Text,
                 DateCreated = DateTime.Now.ToString("D")
             };
             concepts.Add(concept);
@@ -229,19 +231,10 @@ namespace ConceptPad.Views
             TileUpdateManager.CreateTileUpdaterForApplication().Update(tileNotif);
         }
 
-        private void ShareButton_Click(object sender, RoutedEventArgs e)
+        private async void RateButton_Click(object sender, RoutedEventArgs e)
         {
-            DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
-            dataTransferManager.DataRequested += DataTransferManager_DataRequested;
-            DataTransferManager.ShowShareUI();
-        }
-
-        private void DataTransferManager_DataRequested(DataTransferManager sender, DataRequestedEventArgs args)
-        {
-            DataRequest request = args.Request;
-            request.Data.SetApplicationLink(BaseUri);
-            request.Data.Properties.Title = "Link to Concept Pad";
-            request.Data.Properties.Description = "Send the link to download Concept Pad";
+            var ratingUri = new Uri(@"ms-windows-store://review/?ProductId=9N9CV4TS3VB1");
+            await Windows.System.Launcher.LaunchUriAsync(ratingUri);
         }
     }
 }

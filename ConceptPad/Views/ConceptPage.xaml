@@ -33,6 +33,12 @@
                                     <TextBlock Text="Built using" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18" />
                                     <TextBlock x:Name="ToolsText" Text="{Binding Tools}"  Margin="0,0,0,20" Style="{StaticResource CaptionTextBlockStyle}"
                                                FontSize="18" />
+                                    <TextBlock Text="Genre(s)" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18" />
+                                    <TextBlock x:Name="GenresText" Text="{Binding Genres}"  Margin="0,0,0,20" Style="{StaticResource CaptionTextBlockStyle}"
+                                               FontSize="18" />
+                                    <TextBlock Text="Platforms" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18" />
+                                    <TextBlock x:Name="PlatformsText" Text="{Binding Platforms}"  Margin="0,0,0,20" Style="{StaticResource CaptionTextBlockStyle}"
+                                               FontSize="18" />
                                     <TextBlock Text="Created on" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18" />
                                     <TextBlock x:Name="DateText" Text="{Binding DateCreated}"  Margin="0,0,0,20" Style="{StaticResource CaptionTextBlockStyle}"
                                                FontSize="18" />
@@ -52,6 +58,10 @@
                                     <TextBox x:Name="DescriptionEditBox" Text="{Binding Description, Mode=TwoWay}" Margin="0,0,0,20" 
                                              TextChanged="DescriptionEditBox_TextChanged" TextWrapping="Wrap"/>
                                     <TextBox x:Name="ToolsEditBox" Text="{Binding Tools, Mode=TwoWay}" Margin="0,0,0,20" TextChanged="ToolsEditBox_TextChanged"/>
+                                    <TextBox x:Name="GenresEditBox" Text="{Binding Genres, Mode=TwoWay}" Margin="0,0,0,20"
+                                             TextChanged="GenresEditBox_TextChanged" />
+                                    <TextBox x:Name="PlatformsEditBox" Text="{Binding Platforms,Mode=TwoWay}" Margin="0,0,0,20"
+                                             TextChanged="PlatformsEditBox_TextChanged" />
                                 </StackPanel>
                             </ScrollViewer>
                         </DataTemplate>
@@ -63,7 +73,7 @@
         <muxc:ProgressRing x:Name="ProgRing" IsActive="False" />
 
         <CommandBar Grid.Row="1">
-            <AppBarButton x:Name="ShareButton" Icon="Share" Label="Share concept" Click="ShareButton_Click"/>
+            <AppBarButton x:Name="ShareButton" Icon="Share" Label="Share" Click="ShareButton_Click"/>
             <AppBarButton x:Name="DeleteButton" Icon="Delete" Label="Delete">
                 <AppBarButton.Flyout>
                     <Flyout>
