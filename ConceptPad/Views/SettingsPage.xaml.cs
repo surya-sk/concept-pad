@@ -1,5 +1,6 @@
 ﻿using ConceptPad.Helpers;
 using Windows.Storage;
+using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -44,15 +45,27 @@ namespace ConceptPad.Views
                         break;
                 }
             }
-            string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
-            if(cmdLabelPref == null || cmdLabelPref == "No")
+
+            // Command Bar customization doesn't seem to work on mobile
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
-                CmdBarToggle.IsOn = false;
+                CmdBarToggle.IsEnabled = false;
+                CmdText.Visibility = Visibility.Collapsed;
+                CmdImage.Visibility = Visibility.Collapsed;
             }
             else
             {
-                CmdBarToggle.IsOn = true;
+                string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
+                if (cmdLabelPref == null || cmdLabelPref == "No")
+                {
+                    CmdBarToggle.IsOn = false;
+                }
+                else
+                {
+                    CmdBarToggle.IsOn = true;
+                }
             }
+            
             // show back button
             var view = SystemNavigationManager.GetForCurrentView();
             view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
