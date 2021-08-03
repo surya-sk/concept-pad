@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
+using Windows.System.Profile;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -96,7 +97,14 @@ namespace ConceptPad.Views
                 Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             }
             ProgRing.IsActive = false;
-            Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+            {
+                Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+            }
+            else
+            {
+                Frame.Navigate(typeof(MainPage),null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+            }
         }
 
         private void TitleEditBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -125,7 +133,14 @@ namespace ConceptPad.Views
             concepts.RemoveAt(conceptIndex);
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-            Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+            {
+                Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+            }
+            else
+            {
+                Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+            }
         }
 
         private void ShareButton_Click(object sender, RoutedEventArgs e)

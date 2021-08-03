@@ -73,7 +73,9 @@
         <muxc:ProgressRing x:Name="ProgRing" IsActive="False" />
 
         <CommandBar x:Name="CmdBar" Grid.Row="1">
-            <AppBarButton x:Name="ShareButton" Icon="Share" Label="Share" Click="ShareButton_Click"/>
+            <AppBarButton x:Name="ShareButton" Label="Share" Click="ShareButton_Click">
+                <FontIcon Glyph="" />
+            </AppBarButton>
             <AppBarButton x:Name="DeleteButton" Icon="Delete" Label="Delete">
                 <AppBarButton.Flyout>
                     <Flyout>

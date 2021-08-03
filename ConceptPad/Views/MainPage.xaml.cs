@@ -13,6 +13,7 @@ using Windows.UI.Notifications;
 using Windows.Storage;
 using Windows.UI.Core;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.System.Profile;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -152,7 +153,14 @@ namespace ConceptPad.Views
         private void ConceptView_ItemClick(object sender, ItemClickEventArgs e)
         {
             var selectedConcept = (Concept)e.ClickedItem;
-            Frame.Navigate(typeof(ConceptPage), selectedConcept.Id, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+            if(AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+            {
+                Frame.Navigate(typeof(ConceptPage), selectedConcept.Id, new DrillInNavigationTransitionInfo());
+            }
+            else
+            {
+                Frame.Navigate(typeof(ConceptPage), selectedConcept.Id, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromRight });
+            }
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
@@ -222,10 +230,8 @@ namespace ConceptPad.Views
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = c.Description,
+                                    Text = $"{c.Tools} - {c.Genres}",
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle,
-                                    HintMinLines = 2,
-                                    HintMaxLines = 4,
                                     HintWrap = true
                                 }
                             }
