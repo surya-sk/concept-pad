@@ -24,7 +24,6 @@ namespace ConceptPad.Views
         private Concept concept;
         private ObservableCollection<Concept> concepts;
         Guid selectedId;
-        bool edited = false;
         private int conceptIndex;
         public ConceptPage()
         {
@@ -80,22 +79,20 @@ namespace ConceptPad.Views
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             ProgRing.IsActive = true;
-            if(edited)
+            foreach(Concept c in concepts)
             {
-                foreach(Concept c in concepts)
+                if(c.Id == selectedId)
                 {
-                    if(c.Id == selectedId)
-                    {
-                        c.Name = concept.Name;
-                        c.Description = concept.Description;
-                        c.Tools = concept.Tools;
-                        c.Genres = concept.Genres;
-                        c.Platforms = concept.Platforms;
-                    }
+                    c.Name = concept.Name;
+                    c.Description = concept.Description;
+                    c.Tools = concept.Tools;
+                    c.Genres = concept.Genres;
+                    c.Platforms = concept.Platforms;
                 }
-                Profile.GetInstance().SaveSettings(concepts);
-                Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             }
+            Profile.GetInstance().SaveSettings(concepts);
+            Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+            
             ProgRing.IsActive = false;
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
@@ -105,21 +102,6 @@ namespace ConceptPad.Views
             {
                 Frame.Navigate(typeof(MainPage),null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
             }
-        }
-
-        private void TitleEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
-        {
-            edited = true;
-        }
-
-        private void ToolsEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
-        {
-            edited = true;
-        }
-
-        private void DescriptionEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
-        {
-            edited = true;
         }
 
         /// <summary>
@@ -163,21 +145,6 @@ namespace ConceptPad.Views
             request.Data.SetText(concpetData);
             request.Data.Properties.Title = $"Share {concept.Name}";
             request.Data.Properties.Description = "Share this concept, its description and tools.";
-        }
-
-        private void GenresEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
-        {
-            edited = true;
-        }
-
-        private void PlatformsEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
-        {
-            edited = true;
-        }
-
-        private void SummaryEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
-        {
-            edited = true;
         }
     }
 }

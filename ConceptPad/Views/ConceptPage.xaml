@@ -56,15 +56,13 @@
                         <DataTemplate x:DataType="data:Concept">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Orientation="Vertical">
-                                    <TextBox x:Name="TitleEditBox" Text="{Binding Name, Mode=TwoWay}" Margin="0,0,0,20" TextChanging="TitleEditBox_TextChanged"/>
-                                    <TextBox x:Name="SummaryEditBox" Text="{Binding Summary, Mode=TwoWay}" Margin="0,0,0,20" TextChanging="SummaryEditBox_TextChanged"/>
+                                    <TextBox x:Name="TitleEditBox" Text="{Binding Name, Mode=TwoWay}" Margin="0,0,0,20" />
+                                    <TextBox x:Name="SummaryEditBox" Text="{Binding Summary, Mode=TwoWay}" Margin="0,0,0,20" />
                                     <TextBox x:Name="DescriptionEditBox" Text="{Binding Description, Mode=TwoWay}" Margin="0,0,0,20" 
-                                             TextChanging="DescriptionEditBox_TextChanged" TextWrapping="Wrap"/>
-                                    <TextBox x:Name="ToolsEditBox" Text="{Binding Tools, Mode=TwoWay}" Margin="0,0,0,20" TextChanging="ToolsEditBox_TextChanged"/>
-                                    <TextBox x:Name="GenresEditBox" Text="{Binding Genres, Mode=TwoWay}" Margin="0,0,0,20"
-                                             TextChanging="GenresEditBox_TextChanged" />
-                                    <TextBox x:Name="PlatformsEditBox" Text="{Binding Platforms,Mode=TwoWay}" Margin="0,0,0,20"
-                                             TextChanging="PlatformsEditBox_TextChanged" />
+                                              TextWrapping="Wrap"/>
+                                    <TextBox x:Name="ToolsEditBox" Text="{Binding Tools, Mode=TwoWay}" Margin="0,0,0,20" />
+                                    <TextBox x:Name="GenresEditBox" Text="{Binding Genres, Mode=TwoWay}" Margin="0,0,0,20" />
+                                    <TextBox x:Name="PlatformsEditBox" Text="{Binding Platforms,Mode=TwoWay}" Margin="0,0,0,20" />
                                 </StackPanel>
                             </ScrollViewer>
                         </DataTemplate>

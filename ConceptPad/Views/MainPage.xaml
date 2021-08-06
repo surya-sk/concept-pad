@@ -50,7 +50,7 @@
                                 <DataTemplate x:DataType="data:Concept">
                                     <UserControl>
                                         <Grid
-                                        x:Name="rootGrid" MinWidth="360" Height="90" Padding="8"
+                                        x:Name="rootGrid" Width="360" Height="90" Padding="8"
                                         BorderThickness="1" CornerRadius="{StaticResource ControlCornerRadius}">
 
                                             <VisualStateManager.VisualStateGroups>
@@ -66,7 +66,7 @@
                                                             <AdaptiveTrigger MinWindowWidth="0" />
                                                         </VisualState.StateTriggers>
                                                         <VisualState.Setters>
-                                                            <Setter Target="rootGrid.MinWidth" Value="Auto" />
+                                                            <Setter Target="rootGrid.Width" Value="Auto" />
                                                             <Setter Target="rootGrid.Height" Value="120" />
                                                         </VisualState.Setters>
                                                     </VisualState>
