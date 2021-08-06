@@ -191,6 +191,10 @@ namespace ConceptPad.Views
                         DisplayName = "Concept Pad",
                         Content = new TileBindingContentAdaptive()
                         {
+                            BackgroundImage = new TileBackgroundImage()
+                            {
+                                Source = $@"ms-appx:///Assets/{c.Type.ToLower()}-light.png"
+                            },
                             Children =
                             {
                                 new AdaptiveText()
@@ -218,6 +222,11 @@ namespace ConceptPad.Views
                         DisplayName = "Concept Pad",
                         Content = new TileBindingContentAdaptive()
                         {
+                            BackgroundImage = new TileBackgroundImage()
+                            {
+                                Source = $@"ms-appx:///Assets/{c.Type.ToLower()}-light.png",
+                                HintOverlay = 80
+                            },
                             Children =
                             {
                                 new AdaptiveText()

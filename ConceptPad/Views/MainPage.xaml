@@ -49,10 +49,8 @@
                             <GridView.ItemTemplate>
                                 <DataTemplate x:DataType="data:Concept">
                                     <UserControl>
-                                        <Grid
-                                        x:Name="rootGrid" Width="360" Height="90" Padding="8"
-                                        BorderThickness="1" CornerRadius="{StaticResource ControlCornerRadius}">
-
+                                        <Grid x:Name="rootGrid" Width="360" Height="90" Padding="8" 
+                                              BorderThickness="1" CornerRadius="{StaticResource ControlCornerRadius}">
                                             <VisualStateManager.VisualStateGroups>
                                                 <VisualStateGroup x:Name="LayoutVisualStates">
                                                     <VisualState x:Name="WideLayout">
