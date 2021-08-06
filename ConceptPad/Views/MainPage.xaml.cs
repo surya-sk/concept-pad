@@ -137,6 +137,7 @@ namespace ConceptPad.Views
             {
                 Id = Guid.NewGuid(),
                 Name = NameInput.Text,
+                Summary = SummaryInput.Text,
                 Description = DescriptionInput.Text,
                 Type = type,
                 Tools = ToolsInput.Text,
