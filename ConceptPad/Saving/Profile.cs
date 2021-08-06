@@ -21,6 +21,12 @@ namespace ConceptPad.Saving
 
         private Profile()
         {
+            Windows.Storage.ApplicationData.Current.DataChanged += Current_DataChanged;
+        }
+
+        private void Current_DataChanged(ApplicationData sender, object args)
+        {
+            Task.Run(async () => { await GetInstance().ReadProfileAsync(); }).Wait();
         }
 
         public static Profile GetInstance()
