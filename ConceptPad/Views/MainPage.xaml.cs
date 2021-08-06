@@ -14,6 +14,7 @@ using Windows.Storage;
 using Windows.UI.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System.Profile;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -83,7 +84,7 @@ namespace ConceptPad.Views
             {
                 var defautlTheme = new Windows.UI.ViewManagement.UISettings();
                 var uiTheme = defautlTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString();
-                if (uiTheme == "FF000000")
+                if (uiTheme.Equals("#FF000000"))
                 {
                     savedTheme = "Dark";
                 }
