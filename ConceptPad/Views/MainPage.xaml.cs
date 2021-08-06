@@ -119,7 +119,7 @@ namespace ConceptPad.Views
         {
             if(string.IsNullOrEmpty(NameInput.Text) || string.IsNullOrEmpty(DescriptionInput.Text) || string.IsNullOrEmpty(ToolsInput.Text) || string.IsNullOrEmpty(GenresInput.Text) || string.IsNullOrEmpty(PlatformsInput.Text))
             {
-                ErrorText.Visibility = Visibility.Visible;
+                ShowInvalidParamDialog();
             }
             else
             {
@@ -150,6 +150,20 @@ namespace ConceptPad.Views
             ProgRing.IsActive = true;
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             ProgRing.IsActive = false;
+        }
+
+        /// <summary>
+        /// Show content dialog if all the fields are not filled in
+        /// </summary>
+        private async void ShowInvalidParamDialog()
+        {
+            ContentDialog contentDialog = new ContentDialog
+            {
+                Title = "Invalid Parameters",
+                Content = "Please fill in all the fields",
+                CloseButtonText = "Ok"
+            };
+            ContentDialogResult result = await contentDialog.ShowAsync();
         }
 
         private void ConceptView_ItemClick(object sender, ItemClickEventArgs e)

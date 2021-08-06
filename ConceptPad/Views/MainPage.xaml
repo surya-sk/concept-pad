@@ -143,7 +143,6 @@
                                 <TextBox x:Name="PlatformsInput" PlaceholderText="Windows, Android, Xbox etc" Margin="0,10,0,0" />
                             </StackPanel>
                             <Button x:Name="CreateButton" Content="Create" Click="CreateButton_Click" Margin="0,0,0,10" />
-                            <TextBlock x:Name="ErrorText" Text="Fill in all the fields!" FontStyle="Italic" Foreground="Red" Visibility="Collapsed" />
                         </StackPanel>
                     </ScrollViewer>
                 </PivotItem>
