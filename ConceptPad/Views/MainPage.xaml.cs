@@ -193,7 +193,8 @@ namespace ConceptPad.Views
                         {
                             BackgroundImage = new TileBackgroundImage()
                             {
-                                Source = $@"ms-appx:///Assets/{c.Type.ToLower()}-light.png"
+                                Source = $@"ms-appx:///Assets/{c.Type.ToLower()}-light.png",
+                                HintOverlay = 80
                             },
                             Children =
                             {
