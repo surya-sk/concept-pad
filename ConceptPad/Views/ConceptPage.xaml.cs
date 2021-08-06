@@ -154,6 +154,7 @@ namespace ConceptPad.Views
         {
             DataRequest request = args.Request;
             string concpetData = $"{concept.Name}\n\n" +
+                $"Summary:\n{concept.Summary}\n\n" +
                 $"Description:\n{concept.Description}\n\n" +
                 $"Tools:\n{concept.Tools}\n\n" +
                 $"Platform(s):\n{concept.Platforms}\n\n" +
@@ -170,6 +171,11 @@ namespace ConceptPad.Views
         }
 
         private void PlatformsEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            edited = true;
+        }
+
+        private void SummaryEditBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             edited = true;
         }

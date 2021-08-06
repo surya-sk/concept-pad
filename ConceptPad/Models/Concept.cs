@@ -14,6 +14,7 @@ namespace ConceptPad.Models
         private string name;
         private string type;
         private string description;
+        private string summary;
         private string dateCreated;
         private string tools;
         private bool isInProduction;
@@ -97,6 +98,16 @@ namespace ConceptPad.Models
             {
                 platforms = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Platforms)));
+            }
+        }
+
+        public string Summary
+        {
+            get => summary;
+            set
+            {
+                summary = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Summary)));
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

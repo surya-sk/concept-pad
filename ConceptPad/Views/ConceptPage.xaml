@@ -27,6 +27,8 @@
                                                Style="{StaticResource BaseTextBlockStyle}"/>
                                     <TextBlock Text="Type" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18" />
                                     <TextBlock Text="{Binding Type}" Margin="0,0,0,20" Style="{StaticResource CaptionTextBlockStyle}" FontSize="18" />
+                                    <TextBlock Text="Summary" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18" />
+                                    <TextBlock Text="{Binding Summary}" Margin="0,0,0,20" Style="{StaticResource CaptionTextBlockStyle}" FontSize="18" />
                                     <TextBlock Text="Description" Margin="0,0,20,0" Style="{StaticResource CaptionTextBlockStyle}" FontWeight="SemiBold" FontSize="18"  />
                                     <TextBlock x:Name="DescriptionText" Text="{Binding Description}" Margin="0,0,0,20" Style="{StaticResource BodyTextBlockStyle}"
                                                TextWrapping="Wrap" FontSize="18" />
@@ -54,14 +56,15 @@
                         <DataTemplate x:DataType="data:Concept">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Orientation="Vertical">
-                                    <TextBox x:Name="TitleEditBox" Text="{Binding Name, Mode=TwoWay}" Margin="0,0,0,20" TextChanged="TitleEditBox_TextChanged"/>
+                                    <TextBox x:Name="TitleEditBox" Text="{Binding Name, Mode=TwoWay}" Margin="0,0,0,20" TextChanging="TitleEditBox_TextChanged"/>
+                                    <TextBox x:Name="SummaryEditBox" Text="{Binding Summary, Mode=TwoWay}" Margin="0,0,0,20" TextChang="SingummaryEditBox_TextChanged"/>
                                     <TextBox x:Name="DescriptionEditBox" Text="{Binding Description, Mode=TwoWay}" Margin="0,0,0,20" 
-                                             TextChanged="DescriptionEditBox_TextChanged" TextWrapping="Wrap"/>
+                                             TextChanging="DescriptionEditBox_TextChanged" TextWrapping="Wrap"/>
                                     <TextBox x:Name="ToolsEditBox" Text="{Binding Tools, Mode=TwoWay}" Margin="0,0,0,20" TextChanged="ToolsEditBox_TextChanged"/>
                                     <TextBox x:Name="GenresEditBox" Text="{Binding Genres, Mode=TwoWay}" Margin="0,0,0,20"
-                                             TextChanged="GenresEditBox_TextChanged" />
+                                             TextChanging="GenresEditBox_TextChanged" />
                                     <TextBox x:Name="PlatformsEditBox" Text="{Binding Platforms,Mode=TwoWay}" Margin="0,0,0,20"
-                                             TextChanged="PlatformsEditBox_TextChanged" />
+                                             TextChanging="PlatformsEditBox_TextChanged" />
                                 </StackPanel>
                             </ScrollViewer>
                         </DataTemplate>
