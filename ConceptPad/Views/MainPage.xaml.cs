@@ -205,7 +205,7 @@ namespace ConceptPad.Views
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = c.Tools,
+                                    Text = c.Genres,
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -225,12 +225,13 @@ namespace ConceptPad.Views
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = c.Type,
-                                    HintStyle = AdaptiveTextStyle.CaptionSubtle
+                                    Text = $"{c.Tools} - {c.Genres}",
+                                    HintStyle = AdaptiveTextStyle.CaptionSubtle,
+                                    HintWrap = true
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = $"{c.Tools} - {c.Genres}",
+                                    Text = $"{c.Summary}",
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle,
                                     HintWrap = true
                                 }

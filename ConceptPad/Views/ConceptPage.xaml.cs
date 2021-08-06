@@ -107,17 +107,17 @@ namespace ConceptPad.Views
             }
         }
 
-        private void TitleEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void TitleEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
         {
             edited = true;
         }
 
-        private void ToolsEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void ToolsEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
         {
             edited = true;
         }
 
-        private void DescriptionEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void DescriptionEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
         {
             edited = true;
         }
@@ -165,17 +165,17 @@ namespace ConceptPad.Views
             request.Data.Properties.Description = "Share this concept, its description and tools.";
         }
 
-        private void GenresEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void GenresEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
         {
             edited = true;
         }
 
-        private void PlatformsEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void PlatformsEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
         {
             edited = true;
         }
 
-        private void SummaryEditBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void SummaryEditBox_TextChanged(object sender, TextBoxTextChangingEventArgs e)
         {
             edited = true;
         }

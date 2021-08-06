@@ -78,7 +78,7 @@
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
 
-                                            <Grid Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}" Width="70" 
+                                            <Grid Background="{ThemeResource SolidBackgroundFillColorSecondaryBrush}" MinWidth="70" 
                                                   CornerRadius="{ThemeResource ControlCornerRadius}">
                                                 <Image
                                                 x:Name="gridImage"
@@ -100,7 +100,7 @@
                                                 Style="{StaticResource CaptionTextBlockStyle}"
                                                 Margin="0,2,8,0"
                                                 RelativePanel.Below="TitleText"
-                                                Text="{x:Bind Description}"
+                                                Text="{x:Bind Summary}"
                                                 TextTrimming="CharacterEllipsis"/>
                                             </RelativePanel>
                                         </Grid>
@@ -122,6 +122,11 @@
                                 <x:String>Game</x:String>
                                 <x:String>App</x:String>
                             </muxc:RadioButtons>
+                            <StackPanel Orientation="Vertical" Margin="0,0,0,30">
+                                <TextBlock Text="Summary" />
+                                <TextBox x:Name="SummaryInput" PlaceholderText="Enter a short summary" TextWrapping="Wrap"
+                                         IsSpellCheckEnabled="True" Margin="0,10,0,0" />
+                            </StackPanel>
                             <StackPanel Orientation="Vertical" Margin="0,0,0,30">
                                 <TextBlock Text="Description" />
                                 <TextBox x:Name="DescriptionInput" PlaceholderText="Enter the story/details of your concept" 
