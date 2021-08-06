@@ -56,13 +56,13 @@
                         <DataTemplate x:DataType="data:Concept">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Orientation="Vertical">
-                                    <TextBox x:Name="TitleEditBox" Text="{Binding Name, Mode=TwoWay}" Margin="0,0,0,20" />
-                                    <TextBox x:Name="SummaryEditBox" Text="{Binding Summary, Mode=TwoWay}" Margin="0,0,0,20" />
-                                    <TextBox x:Name="DescriptionEditBox" Text="{Binding Description, Mode=TwoWay}" Margin="0,0,0,20" 
+                                    <TextBox x:Name="TitleEditBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
+                                    <TextBox x:Name="SummaryEditBox" Text="{Binding Summary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
+                                    <TextBox x:Name="DescriptionEditBox" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" 
                                               TextWrapping="Wrap"/>
-                                    <TextBox x:Name="ToolsEditBox" Text="{Binding Tools, Mode=TwoWay}" Margin="0,0,0,20" />
-                                    <TextBox x:Name="GenresEditBox" Text="{Binding Genres, Mode=TwoWay}" Margin="0,0,0,20" />
-                                    <TextBox x:Name="PlatformsEditBox" Text="{Binding Platforms,Mode=TwoWay}" Margin="0,0,0,20" />
+                                    <TextBox x:Name="ToolsEditBox" Text="{Binding Tools, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
+                                    <TextBox x:Name="GenresEditBox" Text="{Binding Genres, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
+                                    <TextBox x:Name="PlatformsEditBox" Text="{Binding Platforms,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
                                 </StackPanel>
                             </ScrollViewer>
                         </DataTemplate>
