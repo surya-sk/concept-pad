@@ -54,6 +54,7 @@ namespace ConceptPad.Views
         public MainPage()
         {
             this.InitializeComponent();
+            InitServiceClient();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
             concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
@@ -61,6 +62,23 @@ namespace ConceptPad.Views
             UpdateNotificationQueue();
         }
 
+
+        /// <summary>
+        /// Gets the Graph Service Client 
+        /// </summary>
+        /// <returns></returns>
+        private async Task InitServiceClient()
+        {
+            try
+            {
+                graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
+                User user = await  graphServiceClient.Me.Request().GetAsync();
+            }
+            catch(MsalException msalEx)
+            {
+                Debug.WriteLine($"Error Acquiring Token:{System.Environment.NewLine}{msalEx}");
+            }
+        }
 
         /// <summary>
         /// Sign the user in and return the access token
