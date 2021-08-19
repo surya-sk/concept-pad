@@ -19,6 +19,8 @@ using Microsoft.Identity.Client;
 using Microsoft.Graph;
 using System.Net.Http.Headers;
 using Windows.UI.Xaml.Navigation;
+using System.IO;
+using Windows.UI.Xaml.Media.Imaging;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -57,12 +59,10 @@ namespace ConceptPad.Views
             this.InitializeComponent();
             ProgRing.IsActive = true;
             Task.Run(async () => { await InitServiceClient(); }).Wait();
-            Debug.WriteLine("Main Page");
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            Debug.WriteLine("Navigated");
             string param = (string)e.Parameter;
             if (param == "sync")
             {
@@ -75,6 +75,17 @@ namespace ConceptPad.Views
             ApplyUIPrefs();
             UpdateNotificationQueue();
             ProgRing.IsActive = false;
+            Stream photoResponse = await graphServiceClient.Me.Photo.Content.Request().GetAsync();
+            User user = await graphServiceClient.Me.Request().GetAsync();
+            if (photoResponse != null)
+            {
+                MemoryStream ms = new MemoryStream();
+                photoResponse.CopyTo(ms);
+                ms.Position = 0;
+                BitmapImage accountImage = new BitmapImage();
+                accountImage.SetSource(ms.AsRandomAccessStream());
+                AccountPic.ProfilePicture = accountImage;
+            }
             base.OnNavigatedTo(e);
         }
 
