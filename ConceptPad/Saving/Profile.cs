@@ -36,6 +36,10 @@ namespace ConceptPad.Saving
         /// <returns></returns>
         public async Task UploadConceptsAsync(GraphServiceClient graphServiceClient)
         {
+            if(graphServiceClient is null)
+            {
+                return;
+            }
             StorageFile storageFile = await roamingFolder.GetFileAsync(fileName);
             using(var stream = await storageFile.OpenStreamForWriteAsync())
             {
