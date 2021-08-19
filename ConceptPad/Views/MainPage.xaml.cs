@@ -56,6 +56,7 @@ namespace ConceptPad.Views
         {
             this.InitializeComponent();
             Task.Run(async () => { await InitServiceClient(); }).Wait();
+            Task.Run(async () => { await Profile.GetInstance().DownloadConceptsAsync(graphServiceClient); }).Wait();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
             concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created

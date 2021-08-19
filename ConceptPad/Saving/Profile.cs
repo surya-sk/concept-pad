@@ -50,12 +50,22 @@ namespace ConceptPad.Saving
         /// <returns></returns>
         public async Task DownloadConceptsAsync(GraphServiceClient graphServiceClient)
         {
-            StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-            using(var stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
+            var search = graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync().Result;
+            if(search.Count == 0)
             {
-                using(StreamReader reader = new StreamReader(stream))
+                return;
+            }
+            StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            DriveItem driveItem = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Request().GetAsync();
+            if (driveItem == null)
+            {
+                return;
+            }
+            using (Stream stream = driveItem.Content)
+            {
+                using (StreamReader sr = new StreamReader(stream))
                 {
-                    await FileIO.WriteTextAsync(storageFile, reader.ReadToEnd());
+                    await FileIO.WriteTextAsync(storageFile, sr.ReadToEnd());
                 }
             }
         }
