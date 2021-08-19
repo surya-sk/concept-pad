@@ -56,10 +56,10 @@
                         <DataTemplate x:DataType="data:Concept">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel Orientation="Vertical">
-                                    <TextBox x:Name="TitleEditBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
+                                    <TextBox x:Name="TitleEditBox" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" MinWidth="70" />
                                     <TextBox x:Name="SummaryEditBox" Text="{Binding Summary, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
                                     <TextBox x:Name="DescriptionEditBox" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" 
-                                              TextWrapping="Wrap"/>
+                                              TextWrapping="Wrap" MinHeight="70"/>
                                     <TextBox x:Name="ToolsEditBox" Text="{Binding Tools, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
                                     <TextBox x:Name="GenresEditBox" Text="{Binding Genres, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
                                     <TextBox x:Name="PlatformsEditBox" Text="{Binding Platforms,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
