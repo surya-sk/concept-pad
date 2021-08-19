@@ -44,6 +44,7 @@ namespace ConceptPad.Views
         private const string ClientId = "36fe1d95-014f-4472-ae11-780cd334de86";
         private const string Tenant = "consumers";
         private const string Authority = "https://login.microsoftonline.com/" + Tenant;
+        User user;
 
         private static IPublicClientApplication PublicClientApp;
 
@@ -54,7 +55,7 @@ namespace ConceptPad.Views
         public MainPage()
         {
             this.InitializeComponent();
-            InitServiceClient();
+            Task.Run(async () => { await InitServiceClient(); }).Wait();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
             concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
@@ -72,7 +73,7 @@ namespace ConceptPad.Views
             try
             {
                 graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
-                User user = await  graphServiceClient.Me.Request().GetAsync();
+                user = await  graphServiceClient.Me.Request().GetAsync();
             }
             catch(MsalException msalEx)
             {
