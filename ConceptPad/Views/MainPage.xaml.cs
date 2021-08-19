@@ -57,42 +57,10 @@ namespace ConceptPad.Views
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
             concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
-            string theme = GetTheme();
-            foreach (Concept c in concepts)
-            {
-                c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}-{theme}.png";
-            }
-
-            string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
-            if (cmdLabelPref == null || cmdLabelPref == "No")
-            {
-                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Bottom;
-            }
-            else
-            {
-                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Right;
-            }
-
-            // disable back button
-            var view = SystemNavigationManager.GetForCurrentView();
-            view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Disabled;
-
-            // Set tile notification queue
-            TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
-            string showLiveTile = ApplicationData.Current.LocalSettings.Values["LiveTileOn"]?.ToString();
-            if (showLiveTile == null || showLiveTile == "True")
-            {
-                foreach (Concept c in concepts)
-                {
-                    UpdateLiveTile(c);
-                }
-            }
-
-            if (concepts.Count == 0)
-            {
-                EmtpyListText.Visibility = Visibility.Visible;
-            }
+            ApplyUIPrefs();
+            UpdateNotificationQueue();
         }
+
 
         /// <summary>
         /// Sign the user in and return the access token
@@ -141,6 +109,54 @@ namespace ConceptPad.Views
             }));
 
             return await Task.FromResult(graphClient);
+        }
+
+        /// <summary>
+        /// Send concepts to queue in order to update live tile
+        /// </summary>
+        private void UpdateNotificationQueue()
+        {
+            // Set tile notification queue
+            TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
+            string showLiveTile = ApplicationData.Current.LocalSettings.Values["LiveTileOn"]?.ToString();
+            if (showLiveTile == null || showLiveTile == "True")
+            {
+                foreach (Concept c in concepts)
+                {
+                    UpdateLiveTile(c);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Apply UI prefs based on theme, cmd bar etc
+        /// </summary>
+        private void ApplyUIPrefs()
+        {
+            string theme = GetTheme();
+            foreach (Concept c in concepts)
+            {
+                c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}-{theme}.png";
+            }
+
+            string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
+            if (cmdLabelPref == null || cmdLabelPref == "No")
+            {
+                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Bottom;
+            }
+            else
+            {
+                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Right;
+            }
+
+            // disable back button
+            var view = SystemNavigationManager.GetForCurrentView();
+            view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Disabled;
+
+            if (concepts.Count == 0)
+            {
+                EmtpyListText.Visibility = Visibility.Visible;
+            }
         }
 
         /// <summary>
