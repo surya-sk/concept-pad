@@ -15,6 +15,9 @@ using Windows.UI.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System.Profile;
 using System.Diagnostics;
+using Microsoft.Identity.Client;
+using Microsoft.Graph;
+using System.Net.Http.Headers;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -28,6 +31,26 @@ namespace ConceptPad.Views
     {
         private ObservableCollection<Concept> concepts;
         private string type;
+
+        private string[] scopes = new string[]
+        {
+             "user.read",
+             "Files.Read",
+             "Files.Read.All",
+             "Files.ReadWrite",
+             "Files.ReadWrite.All"
+        };
+
+        private const string ClientId = "36fe1d95-014f-4472-ae11-780cd334de86";
+        private const string Tenant = "consumers";
+        private const string Authority = "https://login.microsoftonline.com/" + Tenant;
+
+        private static IPublicClientApplication PublicClientApp;
+
+        private static readonly string MSGraphURL = "https://graph.microsoft.com/v1.0/";
+        private static AuthenticationResult authResult;
+        private static GraphServiceClient graphServiceClient;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -71,6 +94,54 @@ namespace ConceptPad.Views
             }
         }
 
+        /// <summary>
+        /// Sign the user in and return the access token
+        /// </summary>
+        /// <param name="scopes"></param>
+        /// <returns></returns>
+        private static async Task<string> SignInUserAndGetTokenUsingMSAL(string[] scopes)
+        {
+            PublicClientApp = PublicClientApplicationBuilder.Create(ClientId)
+                 .WithAuthority(Authority)
+                 .WithUseCorporateNetwork(false)
+                 .WithRedirectUri("https://login.microsoftonline.com/common/oauth2/nativeclient")
+                 .WithLogging((level, message, containsPii) =>
+                 {
+                     Debug.WriteLine($"MSAL: {level} {message} ");
+                 }, LogLevel.Warning, enablePiiLogging: false, enableDefaultPlatformLogging: true)
+                 .Build();
+
+            var accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            var firstAccount = accounts.FirstOrDefault();
+
+            try
+            {
+                authResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount).ExecuteAsync();
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
+                Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
+                authResult = await PublicClientApp.AcquireTokenInteractive(scopes).ExecuteAsync().ConfigureAwait(false);
+
+            }
+            return authResult.AccessToken;
+        }
+
+        /// <summary>
+        /// Initialize graph service client 
+        /// </summary>
+        /// <param name="scopes"></param>
+        /// <returns></returns>
+        private async static Task<GraphServiceClient> SignInAndInitializeGraphServiceClient(string[] scopes)
+        {
+            GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
+            new DelegateAuthenticationProvider(async (requestMessage) => {
+                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(scopes));
+            }));
+
+            return await Task.FromResult(graphClient);
+        }
 
         /// <summary>
         /// Get the current app theme. Used for choosing the right icons
