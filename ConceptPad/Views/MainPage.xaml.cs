@@ -18,6 +18,7 @@ using System.Diagnostics;
 using Microsoft.Identity.Client;
 using Microsoft.Graph;
 using System.Net.Http.Headers;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -44,7 +45,6 @@ namespace ConceptPad.Views
         private const string ClientId = "36fe1d95-014f-4472-ae11-780cd334de86";
         private const string Tenant = "consumers";
         private const string Authority = "https://login.microsoftonline.com/" + Tenant;
-        User user;
 
         private static IPublicClientApplication PublicClientApp;
 
@@ -55,15 +55,28 @@ namespace ConceptPad.Views
         public MainPage()
         {
             this.InitializeComponent();
+            ProgRing.IsActive = true;
             Task.Run(async () => { await InitServiceClient(); }).Wait();
+            Debug.WriteLine("Main Page");
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            Debug.WriteLine("Navigated");
+            string param = (string)e.Parameter;
+            if (param == "sync")
+            {
+                Task.Run(async () => { await Profile.GetInstance().UploadConceptsAsync(graphServiceClient); }).Wait();
+            }
             Task.Run(async () => { await Profile.GetInstance().DownloadConceptsAsync(graphServiceClient); }).Wait();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
             concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
             ApplyUIPrefs();
             UpdateNotificationQueue();
+            ProgRing.IsActive = false;
+            base.OnNavigatedTo(e);
         }
-
 
         /// <summary>
         /// Gets the Graph Service Client 
@@ -74,7 +87,6 @@ namespace ConceptPad.Views
             try
             {
                 graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
-                user = await  graphServiceClient.Me.Request().GetAsync();
             }
             catch(MsalException msalEx)
             {
@@ -222,7 +234,7 @@ namespace ConceptPad.Views
             }
         }
 
-        private void CreateButton_Click(object sender, RoutedEventArgs e)
+        private async void CreateButton_Click(object sender, RoutedEventArgs e)
         {
             if(string.IsNullOrEmpty(NameInput.Text) || string.IsNullOrEmpty(DescriptionInput.Text) || string.IsNullOrEmpty(ToolsInput.Text) || string.IsNullOrEmpty(GenresInput.Text) || string.IsNullOrEmpty(PlatformsInput.Text))
             {
@@ -230,7 +242,7 @@ namespace ConceptPad.Views
             }
             else
             {
-                CreateAndAddConcept();
+               await CreateAndAddConcept();
                 Frame.Navigate(typeof(MainPage));
             }
         }
@@ -238,7 +250,7 @@ namespace ConceptPad.Views
         /// <summary>
         /// Create a concept and add it to the list, then write it to the save file
         /// </summary>
-        private void CreateAndAddConcept()
+        private async Task CreateAndAddConcept()
         {
             Concept concept = new Concept()
             {
@@ -255,7 +267,8 @@ namespace ConceptPad.Views
             concepts.Add(concept);
             Profile.GetInstance().SaveSettings(concepts);
             ProgRing.IsActive = true;
-            Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+            await Profile.GetInstance().WriteProfileAsync();
+            await Profile.GetInstance().UploadConceptsAsync(graphServiceClient);
             ProgRing.IsActive = false;
         }
 

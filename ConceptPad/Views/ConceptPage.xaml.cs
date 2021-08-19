@@ -92,15 +92,13 @@ namespace ConceptPad.Views
             }
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-            
-            ProgRing.IsActive = false;
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
-                Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+                Frame.Navigate(typeof(MainPage), "sync", new DrillInNavigationTransitionInfo());
             }
             else
             {
-                Frame.Navigate(typeof(MainPage),null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+                Frame.Navigate(typeof(MainPage), "sync", new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
             }
         }
 
@@ -117,11 +115,11 @@ namespace ConceptPad.Views
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
-                Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+                Frame.Navigate(typeof(MainPage), "sync", new DrillInNavigationTransitionInfo());
             }
             else
             {
-                Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+                Frame.Navigate(typeof(MainPage), "sync", new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
             }
         }
 
