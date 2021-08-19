@@ -8,6 +8,8 @@ using ConceptPad.Models;
 using Windows.Storage;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using Microsoft.Graph;
+using System.IO;
 
 namespace ConceptPad.Saving
 {
@@ -15,23 +17,47 @@ namespace ConceptPad.Saving
     {
         private static Profile instance = new Profile();
         private ObservableCollection<Concept> Concepts = null;
-        ApplicationDataContainer roamingSettings = ApplicationData.Current.RoamingSettings;
         StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
         string fileName = "concepts.txt";
 
         private Profile()
         {
-            Windows.Storage.ApplicationData.Current.DataChanged += Current_DataChanged;
-        }
-
-        private void Current_DataChanged(ApplicationData sender, object args)
-        {
-            Task.Run(async () => { await GetInstance().ReadProfileAsync(); }).Wait();
         }
 
         public static Profile GetInstance()
         {
             return instance;
+        }
+
+        /// <summary>
+        /// Uploads concepts to OneDrive
+        /// </summary>
+        /// <param name="graphServiceClient"></param>
+        /// <returns></returns>
+        public async Task UploadConceptsAsync(GraphServiceClient graphServiceClient)
+        {
+            StorageFile storageFile = await roamingFolder.GetFileAsync(fileName);
+            using(var stream = await storageFile.OpenStreamForWriteAsync())
+            {
+                await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().PutAsync<DriveItem>(stream);
+            }
+        }
+
+        /// <summary>
+        /// Downloads concepts from OneDrive and saves them locally
+        /// </summary>
+        /// <param name="graphServiceClient"></param>
+        /// <returns></returns>
+        public async Task DownloadConceptsAsync(GraphServiceClient graphServiceClient)
+        {
+            StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            using(var stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
+            {
+                using(StreamReader reader = new StreamReader(stream))
+                {
+                    await FileIO.WriteTextAsync(storageFile, reader.ReadToEnd());
+                }
+            }
         }
 
         /// <summary>
