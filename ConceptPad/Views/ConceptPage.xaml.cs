@@ -11,6 +11,8 @@ using Windows.UI.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.System.Profile;
+using Microsoft.Graph;
+using System.IO;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -25,19 +27,29 @@ namespace ConceptPad.Views
         private ObservableCollection<Concept> concepts;
         Guid selectedId;
         private int conceptIndex;
+        GraphServiceClient graphServiceClient;
+        StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
+        string fileName = "concepts.txt";
         public ConceptPage()
         {
             this.InitializeComponent();
             ProgRing.IsActive = true;
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
+            graphServiceClient = Profile.GetInstance().GetGraphServiceClient();
             ProgRing.IsActive = false;
             concepts = Profile.GetInstance().GetConcepts();
+            ShowBackButton();
+
+        }
+
+        private void ShowBackButton()
+        {
             // make the back button visible
             var view = SystemNavigationManager.GetForCurrentView();
             view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
             view.BackRequested += View_BackRequested;
             string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
-            if(cmdLabelPref==null || cmdLabelPref == "No")
+            if (cmdLabelPref == null || cmdLabelPref == "No")
             {
                 CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Bottom;
             }
@@ -45,7 +57,6 @@ namespace ConceptPad.Views
             {
                 CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Right;
             }
-
         }
 
         private void View_BackRequested(object sender, BackRequestedEventArgs e)
@@ -72,11 +83,28 @@ namespace ConceptPad.Views
         }
 
         /// <summary>
+        /// Upload concepts to OneDrive
+        /// </summary>
+        /// <returns></returns>
+        public async Task UploadConceptsAsync()
+        {
+            if (graphServiceClient is null)
+            {
+                return;
+            }
+            StorageFile storageFile = await roamingFolder.GetFileAsync(fileName);
+            using (var stream = await storageFile.OpenStreamForWriteAsync())
+            {
+                await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().PutAsync<DriveItem>(stream);
+            }
+        }
+
+        /// <summary>
         /// If concept has been edited, save it. Navigate to main page regardless.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private async void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             ProgRing.IsActive = true;
             foreach(Concept c in concepts)
@@ -92,7 +120,7 @@ namespace ConceptPad.Views
             }
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-            
+            await UploadConceptsAsync();
             ProgRing.IsActive = false;
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
@@ -109,12 +137,13 @@ namespace ConceptPad.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
+        private async void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
         {
             ProgRing.IsActive = true;
             concepts.RemoveAt(conceptIndex);
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+            await UploadConceptsAsync();
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
                 Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());

@@ -51,6 +51,12 @@ namespace ConceptPad.Views
         {
             ProgRing.IsActive = true;
             Debug.WriteLine(graphServiceClient is null);
+            await DownloadConceptsAsync();
+            Frame.Navigate(typeof(MainPage));
+        }
+
+        private async Task DownloadConceptsAsync()
+        {
             var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
             if (search.Count == 0)
             {
@@ -64,7 +70,19 @@ namespace ConceptPad.Views
                     await FileIO.WriteTextAsync(storageFile, sr.ReadToEnd());
                 }
             }
-            Frame.Navigate(typeof(MainPage));
+        }
+
+        public async Task UploadConceptsAsync()
+        {
+            if (graphServiceClient is null)
+            {
+                return;
+            }
+            StorageFile storageFile = await roamingFolder.GetFileAsync(fileName);
+            using (var stream = await storageFile.OpenStreamForWriteAsync())
+            {
+                await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().PutAsync<DriveItem>(stream);
+            }
         }
 
         private void UpdateNotificationQueue()
@@ -170,7 +188,7 @@ namespace ConceptPad.Views
         /// <summary>
         /// Create a concept and add it to the list, then write it to the save file
         /// </summary>
-        private void CreateAndAddConcept()
+        private async void CreateAndAddConcept()
         {
             Concept concept = new Concept()
             {
@@ -188,6 +206,7 @@ namespace ConceptPad.Views
             Profile.GetInstance().SaveSettings(concepts);
             ProgRing.IsActive = true;
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+            await UploadConceptsAsync();
             ProgRing.IsActive = false;
         }
 
