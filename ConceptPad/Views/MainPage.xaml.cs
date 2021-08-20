@@ -49,6 +49,19 @@ namespace ConceptPad.Views
             UpdateNotificationQueue();
         }
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
+            timer.Tick += async (sender, args) =>
+            {
+                await DownloadConceptsAsync();
+                timer.Stop();
+            };
+
+            timer.Start();
+            base.OnNavigatedTo(e);
+        }
+
         private async void SyncButton_Click(object sender, RoutedEventArgs e)
         {
             ProgRing.IsActive = true;
