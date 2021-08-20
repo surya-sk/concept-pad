@@ -15,6 +15,7 @@ using Windows.UI.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System.Profile;
 using System.Diagnostics;
+using Microsoft.Graph;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -34,6 +35,28 @@ namespace ConceptPad.Views
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
             concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
+
+            InitUIPrefs();
+
+            UpdateNotificationQueue();
+        }
+
+        private void UpdateNotificationQueue()
+        {
+            // Set tile notification queue
+            TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
+            string showLiveTile = ApplicationData.Current.LocalSettings.Values["LiveTileOn"]?.ToString();
+            if (showLiveTile == null || showLiveTile == "True")
+            {
+                foreach (Concept c in concepts)
+                {
+                    UpdateLiveTile(c);
+                }
+            }
+        }
+
+        private void InitUIPrefs()
+        {
             string theme = GetTheme();
             foreach (Concept c in concepts)
             {
@@ -54,16 +77,6 @@ namespace ConceptPad.Views
             var view = SystemNavigationManager.GetForCurrentView();
             view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Disabled;
 
-            // Set tile notification queue
-            TileUpdateManager.CreateTileUpdaterForApplication().EnableNotificationQueue(true);
-            string showLiveTile = ApplicationData.Current.LocalSettings.Values["LiveTileOn"]?.ToString();
-            if (showLiveTile == null || showLiveTile == "True")
-            {
-                foreach (Concept c in concepts)
-                {
-                    UpdateLiveTile(c);
-                }
-            }
 
             if (concepts.Count == 0)
             {
@@ -179,9 +192,11 @@ namespace ConceptPad.Views
             }
         }
 
-        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             ProgRing.IsActive = true;
+            GraphServiceClient graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
+            Debug.WriteLine("Signed in");
             Frame.Navigate(typeof(MainPage));
         }
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
