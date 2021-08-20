@@ -17,6 +17,8 @@ using Windows.System.Profile;
 using System.Diagnostics;
 using Microsoft.Graph;
 using System.IO;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -50,11 +52,14 @@ namespace ConceptPad.Views
         private async void SyncButton_Click(object sender, RoutedEventArgs e)
         {
             ProgRing.IsActive = true;
-            Debug.WriteLine(graphServiceClient is null);
             await DownloadConceptsAsync();
             Frame.Navigate(typeof(MainPage));
         }
 
+        /// <summary>
+        /// Download concepts and save them locally
+        /// </summary>
+        /// <returns></returns>
         private async Task DownloadConceptsAsync()
         {
             var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
@@ -72,6 +77,10 @@ namespace ConceptPad.Views
             }
         }
 
+        /// <summary>
+        /// Upload concepts to OneDrive
+        /// </summary>
+        /// <returns></returns>
         public async Task UploadConceptsAsync()
         {
             if (graphServiceClient is null)
