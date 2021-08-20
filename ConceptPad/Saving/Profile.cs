@@ -22,7 +22,7 @@ namespace ConceptPad.Saving
         StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
         string fileName = "concepts.txt";
 
-        private string[] scopes = new string[]
+        private static string[] scopes = new string[]
         {
              "user.read",
              "Files.Read",
@@ -47,6 +47,8 @@ namespace ConceptPad.Saving
 
         public static Profile GetInstance()
         {
+            if(graphServiceClient is null)
+                graphServiceClient = SignInAndInitializeGraphServiceClient(scopes).Result;
             return instance;
         }
 
@@ -99,12 +101,8 @@ namespace ConceptPad.Saving
             return await Task.FromResult(graphClient);
         }
 
-        public async Task<GraphServiceClient> GetGraphServiceClient()
+        public GraphServiceClient GetGraphServiceClient()
         {
-            if(graphServiceClient == null)
-            {
-                await SignInAndInitializeGraphServiceClient(scopes);
-            }
             return graphServiceClient;
         }
 
@@ -133,18 +131,7 @@ namespace ConceptPad.Saving
         /// <returns></returns>
         public async Task DownloadConceptsAsync()
         {
-            if(graphServiceClient == null)
-            {
-                try
-                {
-                    graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
-                }
-                catch
-                {
-                    return;
-                }
-            }
-            var search = graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync().Result;
+            var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
             if (search.Count == 0)
             {
                 return;

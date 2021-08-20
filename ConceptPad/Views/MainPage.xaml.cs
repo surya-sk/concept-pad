@@ -16,6 +16,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.System.Profile;
 using System.Diagnostics;
 using Microsoft.Graph;
+using System.IO;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -29,9 +30,14 @@ namespace ConceptPad.Views
     {
         private ObservableCollection<Concept> concepts;
         private string type;
+        StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
+        string fileName = "concepts.txt";
+        GraphServiceClient graphServiceClient;
+
         public MainPage()
         {
             this.InitializeComponent();
+            graphServiceClient = Profile.GetInstance().GetGraphServiceClient();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
             concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
@@ -39,6 +45,26 @@ namespace ConceptPad.Views
             InitUIPrefs();
 
             UpdateNotificationQueue();
+        }
+
+        private async void SyncButton_Click(object sender, RoutedEventArgs e)
+        {
+            ProgRing.IsActive = true;
+            Debug.WriteLine(graphServiceClient is null);
+            var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
+            if (search.Count == 0)
+            {
+                return;
+            }
+            StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            using (Stream stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
+            {
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    await FileIO.WriteTextAsync(storageFile, sr.ReadToEnd());
+                }
+            }
+            Frame.Navigate(typeof(MainPage));
         }
 
         private void UpdateNotificationQueue()
@@ -192,13 +218,6 @@ namespace ConceptPad.Views
             }
         }
 
-        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            ProgRing.IsActive = true;
-            GraphServiceClient graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
-            Debug.WriteLine("Signed in");
-            Frame.Navigate(typeof(MainPage));
-        }
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(SettingsPage), null, new DrillInNavigationTransitionInfo());
