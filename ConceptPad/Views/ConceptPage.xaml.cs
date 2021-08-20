@@ -100,6 +100,27 @@ namespace ConceptPad.Views
         }
 
         /// <summary>
+        /// Download concepts and save them locally
+        /// </summary>
+        /// <returns></returns>
+        private async Task DownloadConceptsAsync()
+        {
+            var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
+            if (search.Count == 0)
+            {
+                return;
+            }
+            StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            using (Stream stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
+            {
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    await FileIO.WriteTextAsync(storageFile, sr.ReadToEnd());
+                }
+            }
+        }
+
+        /// <summary>
         /// If concept has been edited, save it. Navigate to main page regardless.
         /// </summary>
         /// <param name="sender"></param>
@@ -121,6 +142,7 @@ namespace ConceptPad.Views
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             await UploadConceptsAsync();
+            await DownloadConceptsAsync();
             ProgRing.IsActive = false;
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
