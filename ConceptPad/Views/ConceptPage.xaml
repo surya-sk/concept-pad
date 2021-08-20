@@ -81,7 +81,8 @@
                 <AppBarButton.Flyout>
                     <Flyout>
                         <StackPanel>
-                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="This concept will be permanently gone. Do you want to delete?" Margin="0,0,0,12"/>
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="This concept will be permanently gone. Do you want to delete?" Margin="0,0,0,12"
+                                       TextWrapping="Wrap"/>
                             <Button x:Name="DeleteConfirmation" Content="Yes, delete the concept"  Click="DeleteConfirmation_Click"/>
                         </StackPanel>
                     </Flyout>
