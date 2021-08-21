@@ -148,7 +148,7 @@
                 </PivotItem>
             </Pivot>
 
-            <muxc:ProgressRing x:Name="ProgRing" IsActive="False" />
+            <ProgressRing x:Name="ProgRing" IsActive="False"/>
 
             <CommandBar x:Name="CmdBar" Background="Transparent" Grid.Row="2">
                 <AppBarButton x:Name="SyncButton" Icon="Sync" Label="Sync" Click="SyncButton_Click"/>
