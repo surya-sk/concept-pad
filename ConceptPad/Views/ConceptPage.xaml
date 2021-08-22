@@ -63,6 +63,7 @@
                                     <TextBox x:Name="ToolsEditBox" Text="{Binding Tools, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
                                     <TextBox x:Name="GenresEditBox" Text="{Binding Genres, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
                                     <TextBox x:Name="PlatformsEditBox" Text="{Binding Platforms,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" />
+                                    <TextBlock Text="Edits are saved automatically" FontSize="12" FontWeight="ExtraLight" FontStyle="Italic" />
                                 </StackPanel>
                             </ScrollViewer>
                         </DataTemplate>

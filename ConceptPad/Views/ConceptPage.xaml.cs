@@ -138,7 +138,7 @@ namespace ConceptPad.Views
                 }
             }
             Profile.GetInstance().SaveSettings(concepts);
-             await Profile.GetInstance().WriteProfileAsync();
+            await Profile.GetInstance().WriteProfileAsync();
             await UploadConceptsAsync();
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
