@@ -77,7 +77,7 @@ namespace ConceptPad.Views
             ProgBar.Visibility = Visibility.Collapsed;
         }
 
-        private async void SyncButton_Click(object sender, RoutedEventArgs e)
+        private void SyncButton_Click(object sender, RoutedEventArgs e)
         {
             ProgBar.Visibility = Visibility.Visible;
             Frame.Navigate(typeof(MainPage));
@@ -217,7 +217,11 @@ namespace ConceptPad.Views
         {
             if(string.IsNullOrEmpty(NameInput.Text) || string.IsNullOrEmpty(DescriptionInput.Text) || string.IsNullOrEmpty(ToolsInput.Text) || string.IsNullOrEmpty(GenresInput.Text) || string.IsNullOrEmpty(PlatformsInput.Text))
             {
-                ShowInvalidParamDialog();
+                ShowInvalidParamDialog("Insufficient Paramenters", "Please fill in all the fields");
+            }
+            else if(!isNetworkAvailable)
+            {
+                ShowInvalidParamDialog("No Internet", "You need the internet to create concepts");
             }
             else
             {
@@ -246,21 +250,20 @@ namespace ConceptPad.Views
             concepts.Add(concept);
             Profile.GetInstance().SaveSettings(concepts);
             ProgBar.Visibility = Visibility.Visible;
-            Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-            if(isNetworkAvailable)
-                await UploadConceptsAsync();
+            await Profile.GetInstance().WriteProfileAsync();
+            await UploadConceptsAsync();
             ProgBar.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>
         /// Show content dialog if all the fields are not filled in
         /// </summary>
-        private async void ShowInvalidParamDialog()
+        private async void ShowInvalidParamDialog(string title, string content)
         {
             ContentDialog contentDialog = new ContentDialog
             {
-                Title = "Invalid Parameters",
-                Content = "Please fill in all the fields",
+                Title = title,
+                Content = content,
                 CloseButtonText = "Ok"
             };
             ContentDialogResult result = await contentDialog.ShowAsync();
