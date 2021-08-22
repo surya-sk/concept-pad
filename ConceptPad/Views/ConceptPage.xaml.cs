@@ -33,9 +33,7 @@ namespace ConceptPad.Views
         public ConceptPage()
         {
             this.InitializeComponent();
-            ProgRing.IsActive = true;
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
-            ProgRing.IsActive = false;
             concepts = Profile.GetInstance().GetConcepts();
             ShowBackButton();
 
@@ -127,7 +125,7 @@ namespace ConceptPad.Views
         /// <param name="e"></param>
         private async void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            ProgRing.IsActive = true;
+            ProgBar.Visibility = Visibility.Visible;
             foreach(Concept c in concepts)
             {
                 if(c.Id == selectedId)
@@ -142,7 +140,6 @@ namespace ConceptPad.Views
             Profile.GetInstance().SaveSettings(concepts);
              await Profile.GetInstance().WriteProfileAsync();
             await UploadConceptsAsync();
-            ProgRing.IsActive = false;
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
                 Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
@@ -160,7 +157,7 @@ namespace ConceptPad.Views
         /// <param name="e"></param>
         private async void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
         {
-            ProgRing.IsActive = true;
+            ProgBar.Visibility = Visibility.Visible;
             concepts.RemoveAt(conceptIndex);
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();

@@ -55,7 +55,7 @@ namespace ConceptPad.Views
         private async void Page_Loaded(object _sender, RoutedEventArgs e)
         {
             await Task.Delay(TimeSpan.FromSeconds(0.2));
-            ProgRing.IsActive = true;
+            ProgBar.Visibility = Visibility.Visible;
             graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
             await DownloadConceptsAsync();
             await Profile.GetInstance().ReadProfileAsync();
@@ -68,12 +68,12 @@ namespace ConceptPad.Views
                 concepts.Add(c);
             }
             SetImagePath();
-            ProgRing.IsActive = false;
+            ProgBar.Visibility = Visibility.Collapsed;
         }
 
         private async void SyncButton_Click(object sender, RoutedEventArgs e)
         {
-            ProgRing.IsActive = true;
+            ProgBar.Visibility = Visibility.Visible;
             await DownloadConceptsAsync();
             Frame.Navigate(typeof(MainPage));
         }
@@ -240,11 +240,11 @@ namespace ConceptPad.Views
             };
             concepts.Add(concept);
             Profile.GetInstance().SaveSettings(concepts);
-            ProgRing.IsActive = true;
+            ProgBar.Visibility = Visibility.Visible;
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             await UploadConceptsAsync();
             await DownloadConceptsAsync();
-            ProgRing.IsActive = false;
+            ProgBar.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>

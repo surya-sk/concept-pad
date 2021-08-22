@@ -149,7 +149,7 @@
                 </PivotItem>
             </Pivot>
 
-            <ProgressRing x:Name="ProgRing" IsActive="False"/>
+            <ProgressBar x:Name="ProgBar" Visibility="Collapsed" IsIndeterminate="True"/>
 
             <CommandBar x:Name="CmdBar" Background="Transparent" Grid.Row="2">
                 <AppBarButton x:Name="SyncButton" Icon="Sync" Label="Sync" Click="SyncButton_Click"/>

@@ -71,7 +71,7 @@
             </PivotItem>
         </Pivot>
 
-        <ProgressRing x:Name="ProgRing" IsActive="False" />
+        <ProgressBar x:Name="ProgBar" IsIndeterminate="True" Visibility="Collapsed" />
 
         <CommandBar x:Name="CmdBar" Grid.Row="1">
             <AppBarButton x:Name="ShareButton" Label="Share" Click="ShareButton_Click">
