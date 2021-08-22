@@ -35,7 +35,6 @@ namespace ConceptPad.Views
             this.InitializeComponent();
             ProgRing.IsActive = true;
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
-            graphServiceClient = Profile.GetInstance().GetGraphServiceClient();
             ProgRing.IsActive = false;
             concepts = Profile.GetInstance().GetConcepts();
             ShowBackButton();
@@ -68,7 +67,7 @@ namespace ConceptPad.Views
             e.Handled = true;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             selectedId = (Guid)e.Parameter;
             foreach(Concept c in concepts)
@@ -79,6 +78,7 @@ namespace ConceptPad.Views
                     conceptIndex = concepts.IndexOf(c);
                 }
             }
+            graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
             base.OnNavigatedTo(e);
         }
 
@@ -140,9 +140,8 @@ namespace ConceptPad.Views
                 }
             }
             Profile.GetInstance().SaveSettings(concepts);
-            Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+             await Profile.GetInstance().WriteProfileAsync();
             await UploadConceptsAsync();
-            await DownloadConceptsAsync();
             ProgRing.IsActive = false;
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {

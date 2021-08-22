@@ -47,8 +47,6 @@ namespace ConceptPad.Saving
 
         public static Profile GetInstance()
         {
-            if(graphServiceClient is null)
-                graphServiceClient = SignInAndInitializeGraphServiceClient(scopes).Result;
             return instance;
         }
 
@@ -101,8 +99,9 @@ namespace ConceptPad.Saving
             return await Task.FromResult(graphClient);
         }
 
-        public GraphServiceClient GetGraphServiceClient()
+        public async Task<GraphServiceClient> GetGraphServiceClient()
         {
+            graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
             return graphServiceClient;
         }
 

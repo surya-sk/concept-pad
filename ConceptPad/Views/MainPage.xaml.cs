@@ -30,7 +30,7 @@ namespace ConceptPad.Views
 
     public sealed partial class MainPage : Page
     {
-        private ObservableCollection<Concept> concepts;
+        private ObservableCollection<Concept> concepts { get; set; }
         private string type;
         StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
         string fileName = "concepts.txt";
@@ -39,14 +39,36 @@ namespace ConceptPad.Views
         public MainPage()
         {
             this.InitializeComponent();
-            graphServiceClient = Profile.GetInstance().GetGraphServiceClient();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
-            concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
-
+            concepts= new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
             InitUIPrefs();
 
             UpdateNotificationQueue();
+        }
+
+        /// <summary>
+        /// Downloads concepts from OneDrive and updates the concepts list
+        /// </summary>
+        /// <param name="_sender"></param>
+        /// <param name="e"></param>
+        private async void Page_Loaded(object _sender, RoutedEventArgs e)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(0.2));
+            ProgRing.IsActive = true;
+            graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
+            await DownloadConceptsAsync();
+            await Profile.GetInstance().ReadProfileAsync();
+            ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
+            var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
+            concepts.Clear();
+            EmtpyListText.Visibility = Visibility.Collapsed;
+            foreach (var c in _concepts)
+            {
+                concepts.Add(c);
+            }
+            SetImagePath();
+            ProgRing.IsActive = false;
         }
 
         private async void SyncButton_Click(object sender, RoutedEventArgs e)
@@ -110,11 +132,7 @@ namespace ConceptPad.Views
 
         private void InitUIPrefs()
         {
-            string theme = GetTheme();
-            foreach (Concept c in concepts)
-            {
-                c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}-{theme}.png";
-            }
+            SetImagePath();
 
             string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
             if (cmdLabelPref == null || cmdLabelPref == "No")
@@ -134,6 +152,15 @@ namespace ConceptPad.Views
             if (concepts.Count == 0)
             {
                 EmtpyListText.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void SetImagePath()
+        {
+            string theme = GetTheme();
+            foreach (Concept c in concepts)
+            {
+                c.ImagePath = $@"ms-appx:///Assets/{c.Type.ToLower()}-{theme}.png";
             }
         }
 
@@ -342,5 +369,6 @@ namespace ConceptPad.Views
             var ratingUri = new Uri(@"ms-windows-store://review/?ProductId=9N9CV4TS3VB1");
             await Windows.System.Launcher.LaunchUriAsync(ratingUri);
         }
+
     }
 }
