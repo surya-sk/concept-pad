@@ -13,6 +13,7 @@ using Windows.Storage;
 using Windows.System.Profile;
 using Microsoft.Graph;
 using System.IO;
+using System.Net.NetworkInformation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -30,6 +31,7 @@ namespace ConceptPad.Views
         GraphServiceClient graphServiceClient;
         StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
         string fileName = "concepts.txt";
+        bool isNetworkAvailable = NetworkInterface.GetIsNetworkAvailable();
         public ConceptPage()
         {
             this.InitializeComponent();
@@ -76,7 +78,8 @@ namespace ConceptPad.Views
                     conceptIndex = concepts.IndexOf(c);
                 }
             }
-            graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
+            if(isNetworkAvailable)
+                graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
             base.OnNavigatedTo(e);
         }
 
@@ -94,27 +97,6 @@ namespace ConceptPad.Views
             using (var stream = await storageFile.OpenStreamForWriteAsync())
             {
                 await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().PutAsync<DriveItem>(stream);
-            }
-        }
-
-        /// <summary>
-        /// Download concepts and save them locally
-        /// </summary>
-        /// <returns></returns>
-        private async Task DownloadConceptsAsync()
-        {
-            var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
-            if (search.Count == 0)
-            {
-                return;
-            }
-            StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-            using (Stream stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
-            {
-                using (StreamReader sr = new StreamReader(stream))
-                {
-                    await FileIO.WriteTextAsync(storageFile, sr.ReadToEnd());
-                }
             }
         }
 
@@ -139,7 +121,8 @@ namespace ConceptPad.Views
             }
             Profile.GetInstance().SaveSettings(concepts);
             await Profile.GetInstance().WriteProfileAsync();
-            await UploadConceptsAsync();
+            if(isNetworkAvailable)
+                await UploadConceptsAsync();
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
                 Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
@@ -161,7 +144,8 @@ namespace ConceptPad.Views
             concepts.RemoveAt(conceptIndex);
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-            await UploadConceptsAsync();
+            if(isNetworkAvailable)
+                await UploadConceptsAsync();
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
                 Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());

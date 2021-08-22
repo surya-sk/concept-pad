@@ -19,6 +19,7 @@ using Microsoft.Graph;
 using System.IO;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using System.Net.NetworkInformation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -35,10 +36,12 @@ namespace ConceptPad.Views
         StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
         string fileName = "concepts.txt";
         GraphServiceClient graphServiceClient;
+        bool isNetworkAvailable = false;
 
         public MainPage()
         {
             this.InitializeComponent();
+            isNetworkAvailable = NetworkInterface.GetIsNetworkAvailable();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
             concepts= new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
@@ -55,26 +58,28 @@ namespace ConceptPad.Views
         private async void Page_Loaded(object _sender, RoutedEventArgs e)
         {
             await Task.Delay(TimeSpan.FromSeconds(0.2));
-            ProgBar.Visibility = Visibility.Visible;
-            graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
-            await DownloadConceptsAsync();
-            await Profile.GetInstance().ReadProfileAsync();
-            ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
-            var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
-            concepts.Clear();
-            EmtpyListText.Visibility = Visibility.Collapsed;
-            foreach (var c in _concepts)
+            if(isNetworkAvailable)
             {
-                concepts.Add(c);
+                ProgBar.Visibility = Visibility.Visible;
+                graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
+                await DownloadConceptsAsync();
+                await Profile.GetInstance().ReadProfileAsync();
+                ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
+                var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
+                concepts.Clear();
+                EmtpyListText.Visibility = Visibility.Collapsed;
+                foreach (var c in _concepts)
+                {
+                    concepts.Add(c);
+                }
+                SetImagePath();
             }
-            SetImagePath();
             ProgBar.Visibility = Visibility.Collapsed;
         }
 
         private async void SyncButton_Click(object sender, RoutedEventArgs e)
         {
             ProgBar.Visibility = Visibility.Visible;
-            await DownloadConceptsAsync();
             Frame.Navigate(typeof(MainPage));
         }
 
@@ -242,8 +247,8 @@ namespace ConceptPad.Views
             Profile.GetInstance().SaveSettings(concepts);
             ProgBar.Visibility = Visibility.Visible;
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-            await UploadConceptsAsync();
-            await DownloadConceptsAsync();
+            if(isNetworkAvailable)
+                await UploadConceptsAsync();
             ProgBar.Visibility = Visibility.Collapsed;
         }
 
