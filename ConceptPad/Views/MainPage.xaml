@@ -8,8 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    Loaded="Page_Loaded">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Frame x:Name="rootFrame">
         <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
@@ -39,6 +38,8 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+
+            <ProgressBar x:Name="ProgBar" Visibility="Collapsed" IsIndeterminate="True"/>
 
             <Pivot x:Name="ConceptsPivot">
                 <PivotItem Header="My Concepts">
@@ -148,8 +149,6 @@
                     </ScrollViewer>
                 </PivotItem>
             </Pivot>
-
-            <ProgressBar x:Name="ProgBar" Visibility="Collapsed" IsIndeterminate="True"/>
 
             <CommandBar x:Name="CmdBar" Background="Transparent" Grid.Row="2">
                 <AppBarButton x:Name="SyncButton" Icon="Sync" Label="Sync" Click="SyncButton_Click"/>

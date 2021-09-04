@@ -101,53 +101,9 @@ namespace ConceptPad.Saving
 
         public async Task<GraphServiceClient> GetGraphServiceClient()
         {
-            graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
+            if(graphServiceClient == null)
+                graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
             return graphServiceClient;
-        }
-
-        /// <summary>
-        /// Uploads concepts to OneDrive
-        /// </summary>
-        /// <param name="graphServiceClient"></param>
-        /// <returns></returns>
-        public async Task UploadConceptsAsync()
-        {
-            if (graphServiceClient is null)
-            {
-                return;
-            }
-            StorageFile storageFile = await roamingFolder.GetFileAsync(fileName);
-            using (var stream = await storageFile.OpenStreamForWriteAsync())
-            {
-                await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().PutAsync<DriveItem>(stream);
-            }
-        }
-
-        /// <summary>
-        /// Downloads concepts from OneDrive and saves them locally
-        /// </summary>
-        /// <param name="graphServiceClient"></param>
-        /// <returns></returns>
-        public async Task DownloadConceptsAsync()
-        {
-            var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
-            if (search.Count == 0)
-            {
-                return;
-            }
-            StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-            DriveItem driveItem = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Request().GetAsync();
-            if (driveItem == null)
-            {
-                return;
-            }
-            using (Stream stream = driveItem.Content)
-            {
-                using (StreamReader sr = new StreamReader(stream))
-                {
-                    await FileIO.WriteTextAsync(storageFile, sr.ReadToEnd());
-                }
-            }
         }
 
         /// <summary>

@@ -55,7 +55,7 @@ namespace ConceptPad.Views
         /// </summary>
         /// <param name="_sender"></param>
         /// <param name="e"></param>
-        private async void Page_Loaded(object _sender, RoutedEventArgs e)
+        protected async  override void OnNavigatedTo(NavigationEventArgs e)
         {
             await Task.Delay(TimeSpan.FromSeconds(0.2));
             if(isNetworkAvailable)
@@ -75,6 +75,7 @@ namespace ConceptPad.Views
                 SetImagePath();
             }
             ProgBar.Visibility = Visibility.Collapsed;
+            base.OnNavigatedTo(e);
         }
 
         private void SyncButton_Click(object sender, RoutedEventArgs e)
@@ -213,7 +214,7 @@ namespace ConceptPad.Views
             }
         }
 
-        private void CreateButton_Click(object sender, RoutedEventArgs e)
+        private async void CreateButton_Click(object sender, RoutedEventArgs e)
         {
             if(string.IsNullOrEmpty(NameInput.Text) || string.IsNullOrEmpty(DescriptionInput.Text) || string.IsNullOrEmpty(ToolsInput.Text) || string.IsNullOrEmpty(GenresInput.Text) || string.IsNullOrEmpty(PlatformsInput.Text))
             {
@@ -225,7 +226,7 @@ namespace ConceptPad.Views
             }
             else
             {
-                CreateAndAddConcept();
+                await CreateAndAddConcept();
                 Frame.Navigate(typeof(MainPage));
             }
         }
@@ -233,7 +234,7 @@ namespace ConceptPad.Views
         /// <summary>
         /// Create a concept and add it to the list, then write it to the save file
         /// </summary>
-        private async void CreateAndAddConcept()
+        private async Task CreateAndAddConcept()
         {
             Concept concept = new Concept()
             {
