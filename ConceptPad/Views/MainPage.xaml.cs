@@ -20,6 +20,8 @@ using System.IO;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using System.Net.NetworkInformation;
+using Newtonsoft.Json;
+using System.Threading;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -57,12 +59,11 @@ namespace ConceptPad.Views
         /// <param name="e"></param>
         protected async  override void OnNavigatedTo(NavigationEventArgs e)
         {
-            await Task.Delay(TimeSpan.FromSeconds(0.2));
             if(isNetworkAvailable)
             {
                 ProgBar.Visibility = Visibility.Visible;
                 graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
-                await DownloadConceptsAsync();
+                await SyncConceptsAsync();
                 await Profile.GetInstance().ReadProfileAsync();
                 ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
                 var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
@@ -85,22 +86,47 @@ namespace ConceptPad.Views
         }
 
         /// <summary>
+        /// Sync concepts with the cloud 
+        /// </summary>
+        /// <returns></returns>
+        private async Task SyncConceptsAsync()
+        {
+            ObservableCollection<Concept> localConcepts = Profile.GetInstance().GetConcepts();
+            ObservableCollection<Concept> cloudConcepts = await DownloadConceptsAsync();
+            string changeStatus = ApplicationData.Current.LocalSettings.Values["ChangeStatus"]?.ToString();
+            if (localConcepts.Count == cloudConcepts.Count)
+            {
+                if (changeStatus != null && changeStatus == "changed")
+                {
+                    concepts = localConcepts;
+                    Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+                    Profile.GetInstance().SaveSettings(concepts);
+                    await UploadConceptsAsync();
+                    ApplicationData.Current.LocalSettings.Values["ChangeStatus"] = "none";
+                }
+                else
+                    concepts = cloudConcepts;
+            }
+            // TODO: Check observable collection
+        }
+
+        /// <summary>
         /// Download concepts and save them locally
         /// </summary>
         /// <returns></returns>
-        private async Task DownloadConceptsAsync()
+        private async Task<ObservableCollection<Concept>> DownloadConceptsAsync()
         {
             var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
             if (search.Count == 0)
             {
-                return;
+                return null;
             }
-            StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
             using (Stream stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
             {
                 using (StreamReader sr = new StreamReader(stream))
                 {
-                    await FileIO.WriteTextAsync(storageFile, sr.ReadToEnd());
+                    string json = sr.ReadToEnd();
+                    return JsonConvert.DeserializeObject<ObservableCollection<Concept>>(json);
                 }
             }
         }
@@ -220,10 +246,6 @@ namespace ConceptPad.Views
             {
                 ShowInvalidParamDialog("Insufficient Paramenters", "Please fill in all the fields");
             }
-            else if(!isNetworkAvailable)
-            {
-                ShowInvalidParamDialog("No Internet", "You need the internet to create concepts");
-            }
             else
             {
                 await CreateAndAddConcept();
@@ -252,7 +274,8 @@ namespace ConceptPad.Views
             Profile.GetInstance().SaveSettings(concepts);
             ProgBar.Visibility = Visibility.Visible;
             await Profile.GetInstance().WriteProfileAsync();
-            await UploadConceptsAsync();
+            if(isNetworkAvailable)
+                await UploadConceptsAsync();
             ProgBar.Visibility = Visibility.Collapsed;
         }
 

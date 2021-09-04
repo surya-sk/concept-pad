@@ -12,6 +12,7 @@ using Microsoft.Identity.Client;
 using Microsoft.Graph;
 using System.Net.Http.Headers;
 using System.IO;
+using System.Threading;
 
 namespace ConceptPad.Saving
 {

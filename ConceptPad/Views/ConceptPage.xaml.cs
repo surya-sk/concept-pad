@@ -177,5 +177,10 @@ namespace ConceptPad.Views
             request.Data.Properties.Title = $"Share {concept.Name}";
             request.Data.Properties.Description = "Share this concept, its description and tools.";
         }
+
+        private void TitleEditBox_TextChanging(TextBox sender, TextBoxTextChangingEventArgs args)
+        {
+            ApplicationData.Current.LocalSettings.Values["ChangeStatus"] = "changed";
+        }
     }
 }
