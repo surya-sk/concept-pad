@@ -426,5 +426,9 @@ namespace ConceptPad.Views
             await Windows.System.Launcher.LaunchUriAsync(ratingUri);
         }
 
+        private void SignInButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

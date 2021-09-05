@@ -44,7 +44,7 @@
             <Pivot x:Name="ConceptsPivot">
                 <PivotItem Header="My Concepts">
                     <StackPanel Orientation="Vertical">
-                        <TextBlock x:Name="EmtpyListText" Text="No concepts detetced. Syncing with the cloud to find concepts." Visibility="Collapsed"
+                        <TextBlock x:Name="EmtpyListText" Text="No concepts detetced. Create one to get started!" Visibility="Collapsed"
                                HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,200,0,0" FontSize="30" TextWrapping="Wrap"/>
                         <GridView Name="ConceptView" ItemsSource="{x:Bind concepts, Mode=OneWay}" IsItemClickEnabled="True" ItemClick="ConceptView_ItemClick"
                               SelectionMode="None" Grid.Row="1" ItemContainerStyle="{StaticResource IndentedGridViewItemStyle}" Margin="0,20,0,0">
@@ -151,9 +151,12 @@
             </Pivot>
 
             <CommandBar x:Name="CmdBar" Background="Transparent" Grid.Row="2">
-                <AppBarButton x:Name="SyncButton" Icon="Sync" Label="Sync" Click="SyncButton_Click"/>
-                <AppBarButton x:Name="RateButton" Icon="LikeDislike" Label="Rate" Click="RateButton_Click" />
+                <CommandBar.SecondaryCommands>
+                    <AppBarButton x:Name="SyncButton" Icon="Sync" Label="Sync Concepts" Click="SyncButton_Click"/>
+                    <AppBarButton x:Name="RateButton" Icon="LikeDislike" Label="Rate and Review" Click="RateButton_Click" />
+                </CommandBar.SecondaryCommands>
                 <AppBarButton x:Name="SettingsButton" Icon="Setting" Label="Settings" Click="SettingsButton_Click"/>
+                <AppBarButton x:Name="SignInButton" Icon="AddFriend" Label="Sign-in" Click="SignInButton_Click" />
             </CommandBar>
 
         </Grid>
