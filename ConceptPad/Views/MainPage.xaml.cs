@@ -62,6 +62,8 @@ namespace ConceptPad.Views
             string signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
             if (isNetworkAvailable && signedIn == "Yes")
             {
+                SignInButton.Visibility = Visibility.Collapsed;
+                ProfileButton.Visibility = Visibility.Visible;
                 graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
                 ProgBar.Visibility = Visibility.Visible;
                 await SyncConceptsAsync();
