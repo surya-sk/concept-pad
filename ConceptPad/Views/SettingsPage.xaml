@@ -21,6 +21,12 @@
                             <x:String>Light</x:String>
                         </ComboBox>
 
+                        <TextBlock Text="For the best experience, sign-in with your Microsoft Account. This will sync concepts using OneDrive so you can access them on all of your Windows devices."
+                                   Foreground="Yellow" FontStyle="Italic" Margin="0,20,0,0" TextWrapping="Wrap" />
+
+                        <TextBlock Text="Concepts are stored in your root OneDrive folder in a file named concepts.txt. DO NOT modify or delete the file, as it can lead to your concepts being lost forever."
+                                   Foreground="Red" Margin="0,20,0,0" TextWrapping="Wrap" FontSize="20" />
+
                         <StackPanel Orientation="Vertical">
                             <TextBlock Text="Live tile" Margin="0,20,0,0" FontSize="15"/>
                             <TextBlock Text="Pin the app to start to see a live tile. Available on Windows 10 only." FontStyle="Italic" 
@@ -58,7 +64,7 @@
                         </TextBlock>
                         <TextBlock Style="{StaticResource BodyTextBlockStyle}" TextWrapping="Wrap" Margin="0,20,0,20" FontSize="15">
                             This app is and will always be free. The app is also open-source, and the source code is available 
-                            on Github.
+                            on Github. 
                             This app does not collect any usage or personal information.
                              This app is licensed under GNU General Public License 3.0.
                         </TextBlock>
