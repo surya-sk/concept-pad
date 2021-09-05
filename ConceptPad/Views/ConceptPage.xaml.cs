@@ -79,7 +79,8 @@ namespace ConceptPad.Views
                     conceptIndex = concepts.IndexOf(c);
                 }
             }
-            if(isNetworkAvailable)
+            string signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
+            if (isNetworkAvailable && signedIn == "Yes")
                 graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
             base.OnNavigatedTo(e);
         }
@@ -145,8 +146,8 @@ namespace ConceptPad.Views
             concepts.RemoveAt(conceptIndex);
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-            Debug.WriteLine(concept.Id);
-            if (isNetworkAvailable)
+            string signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
+            if (isNetworkAvailable && signedIn == "Yes")
                 await UploadConceptsAsync();
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {

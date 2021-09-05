@@ -59,10 +59,11 @@ namespace ConceptPad.Views
         /// <param name="e"></param>
         protected async  override void OnNavigatedTo(NavigationEventArgs e)
         {
-            if(isNetworkAvailable)
+            string signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
+            if (isNetworkAvailable && signedIn == "Yes")
             {
-                ProgBar.Visibility = Visibility.Visible;
                 graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
+                ProgBar.Visibility = Visibility.Visible;
                 await SyncConceptsAsync();
                 await Profile.GetInstance().ReadProfileAsync();
                 ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
@@ -275,6 +276,30 @@ namespace ConceptPad.Views
             }
         }
 
+        private async void SignInButton_Click(object sender, RoutedEventArgs e)
+        {
+            string signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
+            if (isNetworkAvailable)
+            {
+                if(signedIn != "Yes")
+                {
+                    graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
+                    ApplicationData.Current.LocalSettings.Values["SignedIn"] = "Yes";
+                    Frame.Navigate(typeof(MainPage));
+                }
+            }
+            else
+            {
+                ContentDialog contentDialog = new ContentDialog
+                {
+                    Title = "No Internet",
+                    Content = "You need to be connected to sign-in",
+                    CloseButtonText = "Ok"
+                };
+                ContentDialogResult result = await contentDialog.ShowAsync();
+            }
+        }
+
         /// <summary>
         /// Create a concept and add it to the list, then write it to the save file
         /// </summary>
@@ -331,7 +356,7 @@ namespace ConceptPad.Views
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
-        {
+        { 
             Frame.Navigate(typeof(SettingsPage), null, new DrillInNavigationTransitionInfo());
         }
 
@@ -424,11 +449,6 @@ namespace ConceptPad.Views
         {
             var ratingUri = new Uri(@"ms-windows-store://review/?ProductId=9N9CV4TS3VB1");
             await Windows.System.Launcher.LaunchUriAsync(ratingUri);
-        }
-
-        private void SignInButton_Click(object sender, RoutedEventArgs e)
-        {
-
         }
     }
 }
