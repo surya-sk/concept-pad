@@ -68,7 +68,6 @@
                                              TextChanging="TitleEditBox_TextChanging"/>
                                     <TextBox x:Name="PlatformsEditBox" Text="{Binding Platforms,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,20" 
                                              TextChanging="TitleEditBox_TextChanging" />
-                                    <TextBlock Text="Edits are saved automatically" FontSize="12" FontWeight="ExtraLight" FontStyle="Italic" />
                                 </StackPanel>
                             </ScrollViewer>
                         </DataTemplate>

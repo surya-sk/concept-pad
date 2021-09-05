@@ -93,21 +93,43 @@ namespace ConceptPad.Views
         {
             ObservableCollection<Concept> localConcepts = Profile.GetInstance().GetConcepts();
             ObservableCollection<Concept> cloudConcepts = await DownloadConceptsAsync();
-            string changeStatus = ApplicationData.Current.LocalSettings.Values["ChangeStatus"]?.ToString();
             if (localConcepts.Count == cloudConcepts.Count)
             {
+                string changeStatus = ApplicationData.Current.LocalSettings.Values["ChangeStatus"]?.ToString();
                 if (changeStatus != null && changeStatus == "changed")
                 {
                     concepts = localConcepts;
-                    Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
                     Profile.GetInstance().SaveSettings(concepts);
+                    Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
                     await UploadConceptsAsync();
                     ApplicationData.Current.LocalSettings.Values["ChangeStatus"] = "none";
                 }
                 else
                     concepts = cloudConcepts;
             }
-            // TODO: Check observable collection
+            else
+            {
+                concepts = cloudConcepts;
+                if (localConcepts.Count != 0)
+                {
+                    string[] createdConceptsIDs = ApplicationData.Current.LocalSettings.Values["CreatedConcepts"]?.ToString().Split(',');
+                    var extraLocalConcepts = localConcepts.Except(cloudConcepts);
+                    if (extraLocalConcepts != null && extraLocalConcepts.Count() > 0)
+                    {
+                        foreach (Concept c in extraLocalConcepts)
+                        {
+                            if (createdConceptsIDs.Contains(c.Id.ToString()))
+                            {
+                                concepts.Add(c);
+                            }
+                        }
+                    }
+                    ApplicationData.Current.LocalSettings.Values["CreatedConcepts"] = string.Empty;
+                }
+                Profile.GetInstance().SaveSettings(concepts);
+                Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
+                await UploadConceptsAsync();
+            }
         }
 
         /// <summary>
@@ -274,8 +296,10 @@ namespace ConceptPad.Views
             Profile.GetInstance().SaveSettings(concepts);
             ProgBar.Visibility = Visibility.Visible;
             await Profile.GetInstance().WriteProfileAsync();
-            if(isNetworkAvailable)
+            if (isNetworkAvailable)
                 await UploadConceptsAsync();
+            else
+                ApplicationData.Current.LocalSettings.Values["CreatedConcepts"] += $"{concept.Id},";
             ProgBar.Visibility = Visibility.Collapsed;
         }
 

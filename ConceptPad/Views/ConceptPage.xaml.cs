@@ -14,6 +14,7 @@ using Windows.System.Profile;
 using Microsoft.Graph;
 using System.IO;
 using System.Net.NetworkInformation;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -144,7 +145,8 @@ namespace ConceptPad.Views
             concepts.RemoveAt(conceptIndex);
             Profile.GetInstance().SaveSettings(concepts);
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-            if(isNetworkAvailable)
+            Debug.WriteLine(concept.Id);
+            if (isNetworkAvailable)
                 await UploadConceptsAsync();
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
