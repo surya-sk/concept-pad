@@ -138,10 +138,10 @@ namespace ConceptPad.Views
         {
             ContentDialog deleteDialog = new ContentDialog
             {
-                Title = "Are you sure?",
+                Title = "Delete concept?",
                 Content = "Deletion is permanent. This concept cannot be recovered, and will be gone forever.",
-                PrimaryButtonText = "Yes",
-                CloseButtonText = "No"
+                PrimaryButtonText = "Delete",
+                CloseButtonText = "Cancel"
             };
             ContentDialogResult result = await deleteDialog.ShowAsync();
             if(result == ContentDialogResult.Primary)
