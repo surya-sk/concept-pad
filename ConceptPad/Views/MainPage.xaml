@@ -37,7 +37,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <ProgressBar x:Name="ProgBar" Visibility="Collapsed" IsIndeterminate="True"/>
+            <ProgressBar x:Name="ProgBar" Visibility="Collapsed" IsIndeterminate="True" VerticalAlignment="Top"/>
 
             <Pivot x:Name="ConceptsPivot">
                 <PivotItem Header="My Concepts">
@@ -149,10 +149,10 @@
 
             <CommandBar x:Name="CmdBar" Background="Transparent" Grid.Row="2">
                 <CommandBar.SecondaryCommands>
-                    <AppBarButton x:Name="SyncButton" Icon="Sync" Label="Sync Concepts" Click="SyncButton_Click"/>
-                    <AppBarButton x:Name="RateButton" Icon="LikeDislike" Label="Rate and Review" Click="RateButton_Click" />
+                    <AppBarButton x:Name="SettingsButton" Icon="Setting" Label="Settings, Help + About" Click="SettingsButton_Click"/>
+                    <AppBarButton x:Name="RateButton" Icon="LikeDislike" Label="Rate and Review on the Store" Click="RateButton_Click" />
                 </CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="SettingsButton" Icon="Setting" Label="Settings" Click="SettingsButton_Click"/>
+                <AppBarButton x:Name="SyncButton" Icon="Sync" Label="Sync" Click="SyncButton_Click"/>
                 <AppBarButton x:Name="SignInButton" Icon="AddFriend" Label="Sign-in" Click="SignInButton_Click" />
                 <AppBarButton x:Name="ProfileButton" Label="Signed-in" Visibility="Collapsed">
                     <muxc:PersonPicture x:Name="AccountPic" Height="30" Width="30"/>

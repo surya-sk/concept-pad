@@ -134,13 +134,28 @@ namespace ConceptPad.Views
                 Frame.Navigate(typeof(MainPage),null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
             }
         }
+        private async void DeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            ContentDialog deleteDialog = new ContentDialog
+            {
+                Title = "Are you sure?",
+                Content = "Deletion is permanent. This concept cannot be recovered, and will be gone forever.",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "No"
+            };
+            ContentDialogResult result = await deleteDialog.ShowAsync();
+            if(result == ContentDialogResult.Primary)
+            {
+                await DeleteConfirmation_Click();
+            }
+        }
 
         /// <summary>
         /// Delete a concept after confirmation
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
+        private async Task DeleteConfirmation_Click()
         {
             ProgBar.Visibility = Visibility.Visible;
             concepts.RemoveAt(conceptIndex);

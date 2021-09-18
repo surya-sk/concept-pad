@@ -76,23 +76,15 @@
             </PivotItem>
         </Pivot>
 
-        <ProgressBar x:Name="ProgBar" IsIndeterminate="True" Visibility="Collapsed" />
+        <ProgressBar x:Name="ProgBar" IsIndeterminate="True" Visibility="Collapsed" VerticalAlignment="Top" />
 
         <CommandBar x:Name="CmdBar" Grid.Row="1">
-            <AppBarButton x:Name="ShareButton" Label="Share" Click="ShareButton_Click">
-                <FontIcon Glyph="" />
-            </AppBarButton>
-            <AppBarButton x:Name="DeleteButton" Icon="Delete" Label="Delete">
-                <AppBarButton.Flyout>
-                    <Flyout>
-                        <StackPanel>
-                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Deletion is permanent. Are you sure?" Margin="0,0,0,12"
-                                       TextWrapping="Wrap"/>
-                            <Button x:Name="DeleteConfirmation" Content="Yes, delete the concept"  Click="DeleteConfirmation_Click"/>
-                        </StackPanel>
-                    </Flyout>
-                </AppBarButton.Flyout>
-            </AppBarButton>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="ShareButton" Label="Share this concept" Click="ShareButton_Click">
+                    <FontIcon Glyph="" />
+                </AppBarButton>
+                <AppBarButton x:Name="DeleteButton" Icon="Delete" Label="Delete this concept" Click="DeleteButton_Click"/>
+            </CommandBar.SecondaryCommands>
             <AppBarButton x:Name="CloseButton" Icon="Accept" Label="Done" Click="CloseButton_Click"/>
         </CommandBar>
     </Grid>
