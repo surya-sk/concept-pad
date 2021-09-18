@@ -8,7 +8,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <winui:XamlControlsResources ControlsResourcesVersion="Version2"/>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
             </ResourceDictionary.MergedDictionaries>
 
             <ResourceDictionary.ThemeDictionaries>
@@ -61,7 +61,7 @@
 
             <SolidColorBrush x:Key="GridViewHeaderItemDividerStroke" Color="Transparent"/>
 
-            <Style x:Key="OutputTextBlockStyle" BasedOn="{StaticResource BodyTextBlockStyle}" TargetType="TextBlock">
+            <!--<Style x:Key="OutputTextBlockStyle" BasedOn="{StaticResource BodyTextBlockStyle}" TargetType="TextBlock">
                 <Setter Property="Margin" Value="8,8,0,0" />
             </Style>
 
@@ -82,7 +82,7 @@
             <Style x:Key="IndentedGridViewItemStyleSmall" TargetType="GridViewItem" BasedOn="{StaticResource DefaultGridViewItemStyle}">
                 <Setter Property="Margin" Value="12,0,12,12" />
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            </Style>
+            </Style>-->
 
         </ResourceDictionary>
     </Application.Resources>
