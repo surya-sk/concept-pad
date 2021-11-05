@@ -27,17 +27,17 @@ namespace ConceptPad.Views
     {
         private Concept concept;
         private ObservableCollection<Concept> concepts;
+        private string signedIn;
         Guid selectedId;
         private int conceptIndex;
         GraphServiceClient graphServiceClient;
-        StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
-        string fileName = "concepts.txt";
         bool isNetworkAvailable = NetworkInterface.GetIsNetworkAvailable();
         public ConceptPage()
         {
             this.InitializeComponent();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             concepts = Profile.GetInstance().GetConcepts();
+            signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
             ShowBackButton();
 
         }
@@ -86,23 +86,6 @@ namespace ConceptPad.Views
         }
 
         /// <summary>
-        /// Upload concepts to OneDrive
-        /// </summary>
-        /// <returns></returns>
-        public async Task UploadConceptsAsync()
-        {
-            if (graphServiceClient is null)
-            {
-                return;
-            }
-            StorageFile storageFile = await roamingFolder.GetFileAsync(fileName);
-            using (var stream = await storageFile.OpenStreamForWriteAsync())
-            {
-                await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().PutAsync<DriveItem>(stream);
-            }
-        }
-
-        /// <summary>
         /// If concept has been edited, save it. Navigate to main page regardless.
         /// </summary>
         /// <param name="sender"></param>
@@ -124,7 +107,7 @@ namespace ConceptPad.Views
             Profile.GetInstance().SaveSettings(concepts);
             await Profile.GetInstance().WriteProfileAsync();
             if(isNetworkAvailable)
-                await UploadConceptsAsync();
+                await Profile.GetInstance().WriteProfileAsync(signedIn=="Yes");
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
                 Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
@@ -163,7 +146,7 @@ namespace ConceptPad.Views
             Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             string signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
             if (isNetworkAvailable && signedIn == "Yes")
-                await UploadConceptsAsync();
+                await Profile.GetInstance().WriteProfileAsync(signedIn == "Yes");
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
                 Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());

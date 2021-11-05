@@ -111,11 +111,22 @@ namespace ConceptPad.Saving
         /// Write the concept list in JSON format
         /// </summary>
         /// <returns></returns>
-        public async Task WriteProfileAsync()
+        public async Task WriteProfileAsync(bool sync=false)
         {
             string json = JsonConvert.SerializeObject(Concepts);
             StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteTextAsync(storageFile, json);
+            if (sync)
+            {
+                if (graphServiceClient is null)
+                {
+                    return;
+                }
+                using (var stream = await storageFile.OpenStreamForWriteAsync())
+                {
+                    await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().PutAsync<DriveItem>(stream);
+                }
+            }
         }
 
         public void SaveSettings(ObservableCollection<Concept> concepts)
@@ -127,10 +138,19 @@ namespace ConceptPad.Saving
         /// Read the concept list in JSON and deserialze it 
         /// </summary>
         /// <returns></returns>
-        public async Task ReadProfileAsync()
+        public async Task ReadProfileAsync(bool sync = false)
         {
             try
             {
+                if (sync)
+                {
+                    string jsonDownload = await DownloadConceptsJsonAsync();
+                    if (jsonDownload != null)
+                    {
+                        StorageFile file = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+                        await FileIO.WriteTextAsync(file, jsonDownload);
+                    }
+                }
                 StorageFile storageFile = await roamingFolder.GetFileAsync(fileName);
                 string json = await FileIO.ReadTextAsync(storageFile);
                 Concepts = JsonConvert.DeserializeObject<ObservableCollection<Concept>>(json);
@@ -138,6 +158,23 @@ namespace ConceptPad.Saving
             catch
             {
                 Concepts = new ObservableCollection<Concept>();
+            }
+        }
+
+        private async Task<string> DownloadConceptsJsonAsync()
+        {
+            var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
+            if (search.Count == 0)
+            {
+                return null;
+            }
+            using (Stream stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
+            {
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    string json = sr.ReadToEnd();
+                    return json;
+                }
             }
         }
 

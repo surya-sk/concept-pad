@@ -35,10 +35,9 @@ namespace ConceptPad.Views
     {
         private ObservableCollection<Concept> concepts { get; set; }
         private string type;
-        StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
-        string fileName = "concepts.txt";
         GraphServiceClient graphServiceClient;
         bool isNetworkAvailable = false;
+        string signedIn;
 
         public MainPage()
         {
@@ -59,15 +58,14 @@ namespace ConceptPad.Views
         /// <param name="e"></param>
         protected async  override void OnNavigatedTo(NavigationEventArgs e)
         {
-            string signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
+            signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
             if (isNetworkAvailable && signedIn == "Yes")
             {
                 SignInButton.Visibility = Visibility.Collapsed;
                 ProfileButton.Visibility = Visibility.Visible;
                 graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
                 ProgBar.Visibility = Visibility.Visible;
-                await SyncConceptsAsync();
-                await Profile.GetInstance().ReadProfileAsync();
+                await Profile.GetInstance().ReadProfileAsync(true);
                 ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
                 var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
                 concepts.Clear();
@@ -88,90 +86,6 @@ namespace ConceptPad.Views
             Frame.Navigate(typeof(MainPage));
         }
 
-        /// <summary>
-        /// Sync concepts with the cloud 
-        /// </summary>
-        /// <returns></returns>
-        private async Task SyncConceptsAsync()
-        {
-            ObservableCollection<Concept> localConcepts = Profile.GetInstance().GetConcepts();
-            ObservableCollection<Concept> cloudConcepts = await DownloadConceptsAsync();
-            if (localConcepts.Count == cloudConcepts.Count)
-            {
-                string changeStatus = ApplicationData.Current.LocalSettings.Values["ChangeStatus"]?.ToString();
-                if (changeStatus != null && changeStatus == "changed")
-                {
-                    concepts = localConcepts;
-                    Profile.GetInstance().SaveSettings(concepts);
-                    Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-                    await UploadConceptsAsync();
-                    ApplicationData.Current.LocalSettings.Values["ChangeStatus"] = "none";
-                }
-                else
-                    concepts = cloudConcepts;
-            }
-            else
-            {
-                concepts = cloudConcepts;
-                if (localConcepts.Count != 0)
-                {
-                    string[] createdConceptsIDs = ApplicationData.Current.LocalSettings.Values["CreatedConcepts"]?.ToString().Split(',');
-                    var extraLocalConcepts = localConcepts.Except(cloudConcepts);
-                    if (extraLocalConcepts != null && extraLocalConcepts.Count() > 0)
-                    {
-                        foreach (Concept c in extraLocalConcepts)
-                        {
-                            if (createdConceptsIDs.Contains(c.Id.ToString()))
-                            {
-                                concepts.Add(c);
-                            }
-                        }
-                    }
-                    ApplicationData.Current.LocalSettings.Values["CreatedConcepts"] = string.Empty;
-                }
-                Profile.GetInstance().SaveSettings(concepts);
-                Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
-                await UploadConceptsAsync();
-            }
-        }
-
-        /// <summary>
-        /// Download concepts and save them locally
-        /// </summary>
-        /// <returns></returns>
-        private async Task<ObservableCollection<Concept>> DownloadConceptsAsync()
-        {
-            var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
-            if (search.Count == 0)
-            {
-                return null;
-            }
-            using (Stream stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
-            {
-                using (StreamReader sr = new StreamReader(stream))
-                {
-                    string json = sr.ReadToEnd();
-                    return JsonConvert.DeserializeObject<ObservableCollection<Concept>>(json);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Upload concepts to OneDrive
-        /// </summary>
-        /// <returns></returns>
-        public async Task UploadConceptsAsync()
-        {
-            if (graphServiceClient is null)
-            {
-                return;
-            }
-            StorageFile storageFile = await roamingFolder.GetFileAsync(fileName);
-            using (var stream = await storageFile.OpenStreamForWriteAsync())
-            {
-                await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().PutAsync<DriveItem>(stream);
-            }
-        }
 
         private void UpdateNotificationQueue()
         {
@@ -324,7 +238,7 @@ namespace ConceptPad.Views
             ProgBar.Visibility = Visibility.Visible;
             await Profile.GetInstance().WriteProfileAsync();
             if (isNetworkAvailable)
-                await UploadConceptsAsync();
+                await Profile.GetInstance().ReadProfileAsync(signedIn == "Yes");
             else
                 ApplicationData.Current.LocalSettings.Values["CreatedConcepts"] += $"{concept.Id},";
             ProgBar.Visibility = Visibility.Collapsed;
