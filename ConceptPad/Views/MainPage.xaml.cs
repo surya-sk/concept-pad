@@ -58,13 +58,13 @@ namespace ConceptPad.Views
         /// <param name="e"></param>
         protected async  override void OnNavigatedTo(NavigationEventArgs e)
         {
+            ProgBar.Visibility = Visibility.Visible;
             signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
             if (isNetworkAvailable && signedIn == "Yes")
             {
                 SignInButton.Visibility = Visibility.Collapsed;
                 ProfileButton.Visibility = Visibility.Visible;
                 graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
-                ProgBar.Visibility = Visibility.Visible;
                 await Profile.GetInstance().ReadProfileAsync(true);
                 ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
                 var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
