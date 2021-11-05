@@ -178,6 +178,12 @@ namespace ConceptPad.Saving
             }
         }
 
+        public async Task DeleteLocalFileAsync()
+        {
+            StorageFile file = await roamingFolder.GetFileAsync(fileName);
+            await file.DeleteAsync(StorageDeleteOption.Default);
+        }
+
         public ObservableCollection<Concept> GetConcepts()
         {
             return Concepts;

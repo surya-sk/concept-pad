@@ -45,6 +45,10 @@ namespace ConceptPad.Views
             isNetworkAvailable = NetworkInterface.GetIsNetworkAvailable();
             Task.Run(async () => { await Profile.GetInstance().ReadProfileAsync(); }).Wait();
             ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
+            if(readConcepts ==null)
+            {
+                Task.Run(async () => { await Profile.GetInstance().DeleteLocalFileAsync(); }).Wait();
+            }
             concepts= new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
             InitUIPrefs();
 
