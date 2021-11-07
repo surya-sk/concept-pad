@@ -242,10 +242,7 @@ namespace ConceptPad.Views
             concepts.Add(concept);
             Profile.GetInstance().SaveSettings(concepts);
             ProgBar.Visibility = Visibility.Visible;
-            if(isNetworkAvailable)
-                await Profile.GetInstance().WriteProfileAsync(signedIn == "Yes");
-            else
-                ApplicationData.Current.LocalSettings.Values["CreatedConcepts"] += $"{concept.Id},";
+            await Profile.GetInstance().WriteProfileAsync(signedIn == "Yes" && isNetworkAvailable);
             ProgBar.Visibility = Visibility.Collapsed;
         }
 

@@ -105,9 +105,7 @@ namespace ConceptPad.Views
                 }
             }
             Profile.GetInstance().SaveSettings(concepts);
-            await Profile.GetInstance().WriteProfileAsync();
-            if(isNetworkAvailable)
-                await Profile.GetInstance().WriteProfileAsync(signedIn=="Yes");
+            await Profile.GetInstance().WriteProfileAsync(signedIn=="Yes" && isNetworkAvailable);
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
                 Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
@@ -143,10 +141,8 @@ namespace ConceptPad.Views
             ProgBar.Visibility = Visibility.Visible;
             concepts.RemoveAt(conceptIndex);
             Profile.GetInstance().SaveSettings(concepts);
-            Task.Run(async () => { await Profile.GetInstance().WriteProfileAsync(); }).Wait();
             string signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
-            if (isNetworkAvailable && signedIn == "Yes")
-                await Profile.GetInstance().WriteProfileAsync(signedIn == "Yes");
+            await Profile.GetInstance().WriteProfileAsync(signedIn == "Yes" && isNetworkAvailable);
             if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
             {
                 Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
