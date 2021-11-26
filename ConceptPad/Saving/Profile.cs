@@ -77,14 +77,20 @@ namespace ConceptPad.Saving
 
             try
             {
+                await Utils.Logger.WriteLogAsync("Getting MSAL token");
                 authResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount).ExecuteAsync();
             }
             catch (MsalUiRequiredException ex)
             {
                 // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
                 Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
+                await Utils.Logger.WriteExceptionAsync(ex);
                 authResult = await PublicClientApp.AcquireTokenInteractive(scopes).ExecuteAsync().ConfigureAwait(false);
 
+            }
+            catch(Exception ex)
+            {
+                await Utils.Logger.WriteExceptionAsync(ex);
             }
             return authResult.AccessToken;
         }
@@ -110,6 +116,7 @@ namespace ConceptPad.Saving
             IAccount firstAccount = accounts.FirstOrDefault();
             try
             {
+                await Utils.Logger.WriteLogAsync("Signing out");
                 await PublicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
                 ApplicationData.Current.LocalSettings.Values["SignedIn"] = "No";
                 var file = await localFolder.GetFileAsync(fileName);
@@ -117,7 +124,7 @@ namespace ConceptPad.Saving
             }
             catch (Exception ex)
             {
-                //await Utils.Logger.WriteLogAsync($"Error signing out user: {ex.Message}");
+                await Utils.Logger.WriteExceptionAsync(ex);
             }
         }
 
@@ -125,25 +132,33 @@ namespace ConceptPad.Saving
         {
             if (graphServiceClient == null)
             {
-                graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
-                var user = await graphServiceClient.Me.Request().GetAsync();
-                Stream photoresponse = await graphServiceClient.Me.Photo.Content.Request().GetAsync();
-                ApplicationData.Current.LocalSettings.Values["UserName"] = user.GivenName;
-                if (photoresponse != null)
+                try
                 {
-                    using (var randomAccessStream = photoresponse.AsRandomAccessStream())
+                    await Utils.Logger.WriteLogAsync("Initializing service client and getting user photo and name");
+                    graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
+                    var user = await graphServiceClient.Me.Request().GetAsync();
+                    Stream photoresponse = await graphServiceClient.Me.Photo.Content.Request().GetAsync();
+                    ApplicationData.Current.LocalSettings.Values["UserName"] = user.GivenName;
+                    if (photoresponse != null)
                     {
-                        BitmapImage image = new BitmapImage();
-                        randomAccessStream.Seek(0);
-                        await image.SetSourceAsync(randomAccessStream);
+                        using (var randomAccessStream = photoresponse.AsRandomAccessStream())
+                        {
+                            BitmapImage image = new BitmapImage();
+                            randomAccessStream.Seek(0);
+                            await image.SetSourceAsync(randomAccessStream);
 
-                        BitmapDecoder decoder = await BitmapDecoder.CreateAsync(randomAccessStream);
-                        SoftwareBitmap softwareBitmap = await decoder.GetSoftwareBitmapAsync();
-                        var storageFile = await cacheFolder.CreateFileAsync(accountPicFile, CreationCollisionOption.ReplaceExisting);
-                        BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, await storageFile.OpenAsync(FileAccessMode.ReadWrite));
-                        encoder.SetSoftwareBitmap(softwareBitmap);
-                        await encoder.FlushAsync();
+                            BitmapDecoder decoder = await BitmapDecoder.CreateAsync(randomAccessStream);
+                            SoftwareBitmap softwareBitmap = await decoder.GetSoftwareBitmapAsync();
+                            var storageFile = await cacheFolder.CreateFileAsync(accountPicFile, CreationCollisionOption.ReplaceExisting);
+                            BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, await storageFile.OpenAsync(FileAccessMode.ReadWrite));
+                            encoder.SetSoftwareBitmap(softwareBitmap);
+                            await encoder.FlushAsync();
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    await Utils.Logger.WriteExceptionAsync(ex);
                 }
             }
             return graphServiceClient;
@@ -205,18 +220,26 @@ namespace ConceptPad.Saving
 
         private async Task<string> DownloadConceptsJsonAsync()
         {
-            var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
-            if (search.Count == 0)
+            try
             {
-                return null;
-            }
-            using (Stream stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
-            {
-                using (StreamReader sr = new StreamReader(stream))
+                await Utils.Logger.WriteLogAsync("Downloading concepts json from OneDrive");
+                var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
+                if (search.Count == 0)
                 {
-                    string json = sr.ReadToEnd();
-                    return json;
+                    return null;
                 }
+                using (Stream stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
+                {
+                    using (StreamReader sr = new StreamReader(stream))
+                    {
+                        string json = sr.ReadToEnd();
+                        return json;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await Utils.Logger.WriteExceptionAsync(ex);
             }
         }
 

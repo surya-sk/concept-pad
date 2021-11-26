@@ -23,6 +23,7 @@ using System.Net.NetworkInformation;
 using Newtonsoft.Json;
 using System.Threading;
 using Windows.Storage.Streams;
+using ConceptPad.Utils;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -69,22 +70,30 @@ namespace ConceptPad.Views
             signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
             if (isNetworkAvailable && signedIn == "Yes")
             {
-                TopSignInButton.Visibility = Visibility.Collapsed;
-                BottomSignInButton.Visibility = Visibility.Collapsed;
-                TopProfileButton.Visibility = Visibility.Visible;
-                BottomProfileButton.Visibility = Visibility.Visible;
-                graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
-                await SetUserPhotoAsync();
-                await Profile.GetInstance().ReadProfileAsync(true);
-                ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
-                var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
-                concepts.Clear();
-                EmtpyListText.Visibility = Visibility.Collapsed;
-                foreach (var c in _concepts)
+                await Logger.WriteLogAsync("Signin in...");
+                try
                 {
-                    concepts.Add(c);
+                    TopSignInButton.Visibility = Visibility.Collapsed;
+                    BottomSignInButton.Visibility = Visibility.Collapsed;
+                    TopProfileButton.Visibility = Visibility.Visible;
+                    BottomProfileButton.Visibility = Visibility.Visible;
+                    graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
+                    await SetUserPhotoAsync();
+                    await Profile.GetInstance().ReadProfileAsync(true);
+                    ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
+                    var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
+                    concepts.Clear();
+                    EmtpyListText.Visibility = Visibility.Collapsed;
+                    foreach (var c in _concepts)
+                    {
+                        concepts.Add(c);
+                    }
+                    SetImagePath();
                 }
-                SetImagePath();
+                catch(Exception ex)
+                {
+                    await Logger.WriteExceptionAsync(ex);
+                }
             }
             ProgBar.Visibility = Visibility.Collapsed;
             base.OnNavigatedTo(e);
@@ -113,6 +122,7 @@ namespace ConceptPad.Views
 
         private async Task SetUserPhotoAsync()
         {
+            await Logger.WriteLogAsync("Setting user photo and name");
             string userName = ApplicationData.Current.LocalSettings.Values["UserName"]?.ToString();
             TopProfileButton.Label = userName;
             BottomProfileButton.Label = userName;
@@ -216,9 +226,17 @@ namespace ConceptPad.Views
             {
                 if(signedIn != "Yes")
                 {
-                    graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
-                    ApplicationData.Current.LocalSettings.Values["SignedIn"] = "Yes";
-                    Frame.Navigate(typeof(MainPage));
+                    try
+                    {
+                        await Logger.WriteLogAsync("Signing in");
+                        graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
+                        ApplicationData.Current.LocalSettings.Values["SignedIn"] = "Yes";
+                        Frame.Navigate(typeof(MainPage));
+                    }
+                    catch (Exception ex)
+                    {
+                        await Logger.WriteExceptionAsync(ex);
+                    }
                 }
             }
             else
@@ -238,23 +256,32 @@ namespace ConceptPad.Views
         /// </summary>
         private async Task CreateAndAddConcept()
         {
-            Concept concept = new Concept()
+            try
             {
-                Id = Guid.NewGuid(),
-                Name = NameInput.Text,
-                Summary = SummaryInput.Text,
-                Description = DescriptionInput.Text,
-                Type = type,
-                Tools = ToolsInput.Text,
-                Genres = GenresInput.Text,
-                Platforms = PlatformsInput.Text,
-                DateCreated = DateTime.Now.ToString("D")
-            };
-            concepts.Add(concept);
-            Profile.GetInstance().SaveSettings(concepts);
-            ProgBar.Visibility = Visibility.Visible;
-            await Profile.GetInstance().WriteProfileAsync(signedIn == "Yes" && isNetworkAvailable);
-            ProgBar.Visibility = Visibility.Collapsed;
+                await Logger.WriteLogAsync("Creating new concept");
+                Concept concept = new Concept()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = NameInput.Text,
+                    Summary = SummaryInput.Text,
+                    Description = DescriptionInput.Text,
+                    Type = type,
+                    Tools = ToolsInput.Text,
+                    Genres = GenresInput.Text,
+                    Platforms = PlatformsInput.Text,
+                    DateCreated = DateTime.Now.ToString("D")
+                };
+                concepts.Add(concept);
+                await Logger.WriteLogAsync("Saving concept");
+                Profile.GetInstance().SaveSettings(concepts);
+                ProgBar.Visibility = Visibility.Visible;
+                await Profile.GetInstance().WriteProfileAsync(signedIn == "Yes" && isNetworkAvailable);
+                ProgBar.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                await Logger.WriteExceptionAsync(ex);
+            }
         }
 
         /// <summary>

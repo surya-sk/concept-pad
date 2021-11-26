@@ -19,6 +19,11 @@ namespace ConceptPad.Utils
             await FileIO.AppendTextAsync(file, logMessage);
         }
 
+        public static async Task WriteExceptionAsync(Exception ex)
+        {
+            await WriteLogAsync($"Exception occured: {ex.Message}\n\n Stack Trace:\n{ex.StackTrace}");
+        }
+
         public static async Task<String> ReadLogsAsync()
         {
             var file = await localFolder.GetFileAsync(fileName);

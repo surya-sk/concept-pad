@@ -15,6 +15,7 @@ using Microsoft.Graph;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Diagnostics;
+using ConceptPad.Utils;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -83,27 +84,36 @@ namespace ConceptPad.Views
         /// <param name="e"></param>
         private async void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            ProgBar.Visibility = Visibility.Visible;
-            foreach(Concept c in concepts)
+            try
             {
-                if(c.Id == selectedId)
+                await Logger.WriteLogAsync("Closing concept");
+                ProgBar.Visibility = Visibility.Visible;
+                foreach (Concept c in concepts)
                 {
-                    c.Name = concept.Name;
-                    c.Description = concept.Description;
-                    c.Tools = concept.Tools;
-                    c.Genres = concept.Genres;
-                    c.Platforms = concept.Platforms;
+                    if (c.Id == selectedId)
+                    {
+                        c.Name = concept.Name;
+                        c.Description = concept.Description;
+                        c.Tools = concept.Tools;
+                        c.Genres = concept.Genres;
+                        c.Platforms = concept.Platforms;
+                    }
+                }
+                await Logger.WriteLogAsync("Saving concept before closing");
+                Profile.GetInstance().SaveSettings(concepts);
+                await Profile.GetInstance().WriteProfileAsync(signedIn == "Yes" && isNetworkAvailable);
+                if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+                {
+                    Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
+                }
+                else
+                {
+                    Frame.Navigate(typeof(MainPage), null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
                 }
             }
-            Profile.GetInstance().SaveSettings(concepts);
-            await Profile.GetInstance().WriteProfileAsync(signedIn=="Yes" && isNetworkAvailable);
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
+            catch (Exception ex)
             {
-                Frame.Navigate(typeof(MainPage), null, new DrillInNavigationTransitionInfo());
-            }
-            else
-            {
-                Frame.Navigate(typeof(MainPage),null, new SlideNavigationTransitionInfo() { Effect = SlideNavigationTransitionEffect.FromLeft });
+                await Logger.WriteExceptionAsync(ex);
             }
         }
         private async void DeleteButton_Click(object sender, RoutedEventArgs e)
@@ -118,7 +128,15 @@ namespace ConceptPad.Views
             ContentDialogResult result = await deleteDialog.ShowAsync();
             if(result == ContentDialogResult.Primary)
             {
-                await DeleteConfirmation_Click();
+                try
+                {
+                    await Logger.WriteLogAsync("Deleting concept");
+                    await DeleteConfirmation_Click();
+                }
+                catch(Exception ex)
+                {
+                    await Logger.WriteExceptionAsync(ex);
+                }
             }
         }
 
