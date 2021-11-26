@@ -1,4 +1,5 @@
 ﻿using ConceptPad.Helpers;
+using ConceptPad.Saving;
 using System;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -115,9 +116,21 @@ namespace ConceptPad.Views
             ApplicationData.Current.LocalSettings.Values["LiveTileOn"] = TileToggle.IsOn.ToString();
         }
 
-        private void SignOutButton_Click(object sender, RoutedEventArgs e)
+        private async void SignOutButton_Click(object sender, RoutedEventArgs e)
         {
-
+            ContentDialog contentDialog = new ContentDialog
+            {
+                Title = "Sign out?",
+                Content = "You will no longer have access to your backlogs, and new ones will no longer be synced",
+                PrimaryButtonText = "Yes",
+                CloseButtonText = "No"
+            };
+            ContentDialogResult result = await contentDialog.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                await Profile.GetInstance().SignOut();
+                Frame.Navigate(typeof(MainPage));
+            }
         }
     }
 }

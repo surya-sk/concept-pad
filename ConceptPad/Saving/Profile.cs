@@ -22,7 +22,7 @@ namespace ConceptPad.Saving
     {
         private static Profile instance = new Profile();
         private ObservableCollection<Concept> Concepts = null;
-        StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
+        StorageFolder localFolder = ApplicationData.Current.RoamingFolder;
         string fileName = "concepts.txt";
         StorageFolder cacheFolder = ApplicationData.Current.LocalCacheFolder;
         string accountPicFile = "profile.png";
@@ -104,6 +104,23 @@ namespace ConceptPad.Saving
             return await Task.FromResult(graphClient);
         }
 
+        public async Task SignOut()
+        {
+            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            IAccount firstAccount = accounts.FirstOrDefault();
+            try
+            {
+                await PublicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
+                ApplicationData.Current.LocalSettings.Values["SignedIn"] = "No";
+                var file = await localFolder.GetFileAsync(fileName);
+                await file.DeleteAsync(StorageDeleteOption.Default);
+            }
+            catch (Exception ex)
+            {
+                //await Utils.Logger.WriteLogAsync($"Error signing out user: {ex.Message}");
+            }
+        }
+
         public async Task<GraphServiceClient> GetGraphServiceClient()
         {
             if (graphServiceClient == null)
@@ -139,7 +156,7 @@ namespace ConceptPad.Saving
         public async Task WriteProfileAsync(bool sync=false)
         {
             string json = JsonConvert.SerializeObject(Concepts);
-            StorageFile storageFile = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            StorageFile storageFile = await localFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
             await FileIO.WriteTextAsync(storageFile, json);
             if (sync)
             {
@@ -172,11 +189,11 @@ namespace ConceptPad.Saving
                     string jsonDownload = await DownloadConceptsJsonAsync();
                     if (jsonDownload != null)
                     {
-                        StorageFile file = await roamingFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+                        StorageFile file = await localFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
                         await FileIO.WriteTextAsync(file, jsonDownload);
                     }
                 }
-                StorageFile storageFile = await roamingFolder.GetFileAsync(fileName);
+                StorageFile storageFile = await localFolder.GetFileAsync(fileName);
                 string json = await FileIO.ReadTextAsync(storageFile);
                 Concepts = JsonConvert.DeserializeObject<ObservableCollection<Concept>>(json);
             }
@@ -205,7 +222,7 @@ namespace ConceptPad.Saving
 
         public async Task DeleteLocalFileAsync()
         {
-            StorageFile file = await roamingFolder.GetFileAsync(fileName);
+            StorageFile file = await localFolder.GetFileAsync(fileName);
             await file.DeleteAsync(StorageDeleteOption.Default);
         }
 
