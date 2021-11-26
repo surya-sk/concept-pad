@@ -13,6 +13,8 @@ using Microsoft.Graph;
 using System.Net.Http.Headers;
 using System.IO;
 using System.Threading;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.Graphics.Imaging;
 
 namespace ConceptPad.Saving
 {
@@ -22,6 +24,8 @@ namespace ConceptPad.Saving
         private ObservableCollection<Concept> Concepts = null;
         StorageFolder roamingFolder = ApplicationData.Current.RoamingFolder;
         string fileName = "concepts.txt";
+        StorageFolder cacheFolder = ApplicationData.Current.LocalCacheFolder;
+        string accountPicFile = "profile.png";
 
         private static string[] scopes = new string[]
         {
@@ -102,8 +106,29 @@ namespace ConceptPad.Saving
 
         public async Task<GraphServiceClient> GetGraphServiceClient()
         {
-            if(graphServiceClient == null)
+            if (graphServiceClient == null)
+            {
                 graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
+                var user = await graphServiceClient.Me.Request().GetAsync();
+                Stream photoresponse = await graphServiceClient.Me.Photo.Content.Request().GetAsync();
+                ApplicationData.Current.LocalSettings.Values["UserName"] = user.GivenName;
+                if (photoresponse != null)
+                {
+                    using (var randomAccessStream = photoresponse.AsRandomAccessStream())
+                    {
+                        BitmapImage image = new BitmapImage();
+                        randomAccessStream.Seek(0);
+                        await image.SetSourceAsync(randomAccessStream);
+
+                        BitmapDecoder decoder = await BitmapDecoder.CreateAsync(randomAccessStream);
+                        SoftwareBitmap softwareBitmap = await decoder.GetSoftwareBitmapAsync();
+                        var storageFile = await cacheFolder.CreateFileAsync(accountPicFile, CreationCollisionOption.ReplaceExisting);
+                        BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, await storageFile.OpenAsync(FileAccessMode.ReadWrite));
+                        encoder.SetSoftwareBitmap(softwareBitmap);
+                        await encoder.FlushAsync();
+                    }
+                }
+            }
             return graphServiceClient;
         }
 
