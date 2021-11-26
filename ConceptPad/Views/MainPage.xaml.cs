@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Navigation;
 using System.Net.NetworkInformation;
 using Newtonsoft.Json;
 using System.Threading;
+using Windows.Storage.Streams;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -73,6 +74,7 @@ namespace ConceptPad.Views
                 TopProfileButton.Visibility = Visibility.Visible;
                 BottomProfileButton.Visibility = Visibility.Visible;
                 graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
+                await SetUserPhotoAsync();
                 await Profile.GetInstance().ReadProfileAsync(true);
                 ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
                 var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
@@ -106,6 +108,23 @@ namespace ConceptPad.Views
                 {
                     UpdateLiveTile(c);
                 }
+            }
+        }
+
+        private async Task SetUserPhotoAsync()
+        {
+            string userName = ApplicationData.Current.LocalSettings.Values["UserName"]?.ToString();
+            TopProfileButton.Label = userName;
+            BottomProfileButton.Label = userName;
+            var cacheFolder = ApplicationData.Current.LocalCacheFolder;
+            var accountPicFile = await cacheFolder.GetFileAsync("profile.png");
+            using (IRandomAccessStream stream = await accountPicFile.OpenAsync(FileAccessMode.Read))
+            {
+                BitmapImage image = new BitmapImage();
+                stream.Seek(0);
+                await image.SetSourceAsync(stream);
+                TopAccountPic.ProfilePicture = image;
+                BottomAccountPic.ProfilePicture = image;
             }
         }
 
