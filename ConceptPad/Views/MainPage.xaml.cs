@@ -70,30 +70,22 @@ namespace ConceptPad.Views
             signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
             if (isNetworkAvailable && signedIn == "Yes")
             {
-                await Logger.WriteLogAsync("Signin in...");
-                try
+                TopSignInButton.Visibility = Visibility.Collapsed;
+                BottomSignInButton.Visibility = Visibility.Collapsed;
+                TopProfileButton.Visibility = Visibility.Visible;
+                BottomProfileButton.Visibility = Visibility.Visible;
+                graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
+                await SetUserPhotoAsync();
+                await Profile.GetInstance().ReadProfileAsync(true);
+                ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
+                var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
+                concepts.Clear();
+                EmtpyListText.Visibility = Visibility.Collapsed;
+                foreach (var c in _concepts)
                 {
-                    TopSignInButton.Visibility = Visibility.Collapsed;
-                    BottomSignInButton.Visibility = Visibility.Collapsed;
-                    TopProfileButton.Visibility = Visibility.Visible;
-                    BottomProfileButton.Visibility = Visibility.Visible;
-                    graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
-                    await SetUserPhotoAsync();
-                    await Profile.GetInstance().ReadProfileAsync(true);
-                    ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
-                    var _concepts = new ObservableCollection<Concept>(readConcepts.OrderByDescending(c => c.DateCreated)); // sort by last created
-                    concepts.Clear();
-                    EmtpyListText.Visibility = Visibility.Collapsed;
-                    foreach (var c in _concepts)
-                    {
-                        concepts.Add(c);
-                    }
-                    SetImagePath();
+                    concepts.Add(c);
                 }
-                catch(Exception ex)
-                {
-                    await Logger.WriteExceptionAsync(ex);
-                }
+                SetImagePath();
             }
             ProgBar.Visibility = Visibility.Collapsed;
             base.OnNavigatedTo(e);
@@ -122,7 +114,6 @@ namespace ConceptPad.Views
 
         private async Task SetUserPhotoAsync()
         {
-            await Logger.WriteLogAsync("Setting user photo and name");
             string userName = ApplicationData.Current.LocalSettings.Values["UserName"]?.ToString();
             TopProfileButton.Label = userName;
             BottomProfileButton.Label = userName;

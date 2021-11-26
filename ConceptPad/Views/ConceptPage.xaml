@@ -31,7 +31,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Pivot>
-            <PivotItem Header="Details">
+            <PivotItem Header="details">
                 <ContentControl Content="{x:Bind concept}">
                     <ContentControl.ContentTemplate>
                         <DataTemplate x:DataType="data:Concept">
@@ -64,7 +64,7 @@
                     </ContentControl.ContentTemplate>
                 </ContentControl>
             </PivotItem>
-            <PivotItem Header="Edit">
+            <PivotItem Header="edit">
                 <ContentControl Content="{x:Bind concept}">
                     <ContentControl.ContentTemplate>
                         <DataTemplate x:DataType="data:Concept">

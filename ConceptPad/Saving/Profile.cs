@@ -77,7 +77,6 @@ namespace ConceptPad.Saving
 
             try
             {
-                await Utils.Logger.WriteLogAsync("Getting MSAL token");
                 authResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount).ExecuteAsync();
             }
             catch (MsalUiRequiredException ex)
@@ -87,10 +86,6 @@ namespace ConceptPad.Saving
                 await Utils.Logger.WriteExceptionAsync(ex);
                 authResult = await PublicClientApp.AcquireTokenInteractive(scopes).ExecuteAsync().ConfigureAwait(false);
 
-            }
-            catch(Exception ex)
-            {
-                await Utils.Logger.WriteExceptionAsync(ex);
             }
             return authResult.AccessToken;
         }
@@ -132,33 +127,25 @@ namespace ConceptPad.Saving
         {
             if (graphServiceClient == null)
             {
-                try
+                graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
+                var user = await graphServiceClient.Me.Request().GetAsync();
+                Stream photoresponse = await graphServiceClient.Me.Photo.Content.Request().GetAsync();
+                ApplicationData.Current.LocalSettings.Values["UserName"] = user.GivenName;
+                if (photoresponse != null)
                 {
-                    await Utils.Logger.WriteLogAsync("Initializing service client and getting user photo and name");
-                    graphServiceClient = await SignInAndInitializeGraphServiceClient(scopes);
-                    var user = await graphServiceClient.Me.Request().GetAsync();
-                    Stream photoresponse = await graphServiceClient.Me.Photo.Content.Request().GetAsync();
-                    ApplicationData.Current.LocalSettings.Values["UserName"] = user.GivenName;
-                    if (photoresponse != null)
+                    using (var randomAccessStream = photoresponse.AsRandomAccessStream())
                     {
-                        using (var randomAccessStream = photoresponse.AsRandomAccessStream())
-                        {
-                            BitmapImage image = new BitmapImage();
-                            randomAccessStream.Seek(0);
-                            await image.SetSourceAsync(randomAccessStream);
+                        BitmapImage image = new BitmapImage();
+                        randomAccessStream.Seek(0);
+                        await image.SetSourceAsync(randomAccessStream);
 
-                            BitmapDecoder decoder = await BitmapDecoder.CreateAsync(randomAccessStream);
-                            SoftwareBitmap softwareBitmap = await decoder.GetSoftwareBitmapAsync();
-                            var storageFile = await cacheFolder.CreateFileAsync(accountPicFile, CreationCollisionOption.ReplaceExisting);
-                            BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, await storageFile.OpenAsync(FileAccessMode.ReadWrite));
-                            encoder.SetSoftwareBitmap(softwareBitmap);
-                            await encoder.FlushAsync();
-                        }
+                        BitmapDecoder decoder = await BitmapDecoder.CreateAsync(randomAccessStream);
+                        SoftwareBitmap softwareBitmap = await decoder.GetSoftwareBitmapAsync();
+                        var storageFile = await cacheFolder.CreateFileAsync(accountPicFile, CreationCollisionOption.ReplaceExisting);
+                        BitmapEncoder encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, await storageFile.OpenAsync(FileAccessMode.ReadWrite));
+                        encoder.SetSoftwareBitmap(softwareBitmap);
+                        await encoder.FlushAsync();
                     }
-                }
-                catch (Exception ex)
-                {
-                    await Utils.Logger.WriteExceptionAsync(ex);
                 }
             }
             return graphServiceClient;

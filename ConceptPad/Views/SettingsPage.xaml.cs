@@ -1,7 +1,9 @@
 ﻿using ConceptPad.Helpers;
 using ConceptPad.Saving;
+using ConceptPad.Utils;
 using System;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Email;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System.Profile;
@@ -130,6 +132,52 @@ namespace ConceptPad.Views
             {
                 await Profile.GetInstance().SignOut();
                 Frame.Navigate(typeof(MainPage));
+            }
+        }
+
+        private async void SendLogsButton_Click(object sender, RoutedEventArgs e)
+        {
+            ProgRing.IsActive = true;
+            string logs = await Logger.ReadLogsAsync();
+            EmailMessage emailMessage = new EmailMessage();
+            emailMessage.To.Add(new EmailRecipient("surya.sk05@outlook.com"));
+            emailMessage.Subject = "Logs from Concept Pad";
+            emailMessage.Body = logs;
+            await EmailManager.ShowComposeNewEmailAsync(emailMessage);
+            ProgRing.IsActive = false;
+        }
+
+        private async Task ShowError()
+        {
+            ContentDialog contentDialog = new ContentDialog
+            {
+                Title = "Insufficient data",
+                Content = "Please fill in both the fields",
+                CloseButtonText = "Ok"
+            };
+            ContentDialogResult result = await contentDialog.ShowAsync();
+        }
+
+        private async Task SendEmail()
+        {
+            ProgRing.IsActive = true;
+            EmailMessage emailMessage = new EmailMessage();
+            emailMessage.Subject = "[Concept Pad] " + IssueTypeComboBox.SelectedItem.ToString();
+            emailMessage.Body = MessageBox.Text;
+            emailMessage.To.Add(new EmailRecipient("surya.sk05@outlook.com"));
+            await EmailManager.ShowComposeNewEmailAsync(emailMessage);
+            ProgRing.IsActive = false;
+        }
+
+        private async void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (IssueTypeComboBox.SelectedIndex < 0 || MessageBox.Text == "")
+            {
+                await ShowError();
+            }
+            else
+            {
+                await SendEmail();
             }
         }
     }

@@ -34,7 +34,7 @@
             <muxc:ProgressBar x:Name="ProgBar" Visibility="Collapsed" IsIndeterminate="True" VerticalAlignment="Top"/>
 
             <Pivot x:Name="ConceptsPivot">
-                <PivotItem Header="My Concepts">
+                <PivotItem Header="my concepts">
                     <StackPanel Orientation="Vertical">
                         <TextBlock x:Name="EmtpyListText" Text="No concepts detetced. Sign-in to sync concepts or create a new one to get started!" Visibility="Collapsed"
                                HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,200,0,0" FontSize="30" TextWrapping="Wrap"/>
@@ -101,7 +101,7 @@
                         </GridView>
                     </StackPanel>
                 </PivotItem>
-                <PivotItem Header="Create">
+                <PivotItem Header="create">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Vertical" Margin="0,0,0,30">
