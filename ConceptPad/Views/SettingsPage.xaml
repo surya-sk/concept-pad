@@ -55,14 +55,6 @@
                                       Toggled="TileToggle_Toggled"/>
                             </StackPanel>
 
-                            <StackPanel Orientation="Vertical">
-                                <ToggleSwitch x:Name="CmdBarToggle" Header="Always show labels on Command Bars" OffContent="No" OnContent="Yes" Margin="0,20,0,0" 
-                                          Toggled="CmdBarToggle_Toggled" FontSize="15"/>
-                                <TextBlock x:Name="CmdText" Text="Enabling this will show labels beside the icons on command bars at the bottom, like the picture below" 
-                                       FontWeight="ExtraLight" FontStyle="Italic"  TextWrapping="Wrap"/>
-                                <Image x:Name="CmdImage" Source="ms-appx:///Assets/cmd-bar.png" Stretch="None" HorizontalAlignment="Left" Margin="0,10,0,0" />
-                            </StackPanel>
-
                             <TextBlock Text="For the best experience, sign-in with your Microsoft Account. This will sync concepts using OneDrive so you can access them on all of your Windows devices."
                                    FontStyle="Italic" Margin="0,20,0,0" TextWrapping="Wrap" />
 
