@@ -46,26 +46,6 @@ namespace ConceptPad.Views
                 }
             }
 
-            // Command Bar customization doesn't seem to work on mobile
-            if (AnalyticsInfo.VersionInfo.DeviceFamily == "Windows.Mobile")
-            {
-                CmdBarToggle.IsEnabled = false;
-                CmdText.Visibility = Visibility.Collapsed;
-                CmdImage.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
-                if (cmdLabelPref == null || cmdLabelPref == "No")
-                {
-                    CmdBarToggle.IsOn = false;
-                }
-                else
-                {
-                    CmdBarToggle.IsOn = true;
-                }
-            }
-            
             // show back button
             var view = SystemNavigationManager.GetForCurrentView();
             view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
@@ -99,18 +79,6 @@ namespace ConceptPad.Views
         private void TileToggle_Toggled(object sender, RoutedEventArgs e)
         {
             ApplicationData.Current.LocalSettings.Values["LiveTileOn"] = TileToggle.IsOn.ToString();
-        }
-
-        private void CmdBarToggle_Toggled(object sender, RoutedEventArgs e)
-        {
-            if(CmdBarToggle.IsOn)
-            {
-                ApplicationData.Current.LocalSettings.Values["CmdBarLabels"] = "Yes";
-            }
-            else
-            {
-                ApplicationData.Current.LocalSettings.Values["CmdBarLabels"] = "No";
-            }
         }
     }
 }
