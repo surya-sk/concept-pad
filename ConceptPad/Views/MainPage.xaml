@@ -31,7 +31,7 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <Grid x:Name="mainGrid">
-            <ProgressBar x:Name="ProgBar" Visibility="Collapsed" IsIndeterminate="True" VerticalAlignment="Top"/>
+            <muxc:ProgressBar x:Name="ProgBar" Visibility="Collapsed" IsIndeterminate="True" VerticalAlignment="Top"/>
 
             <Pivot x:Name="ConceptsPivot">
                 <PivotItem Header="My Concepts">
@@ -142,6 +142,7 @@
             </Pivot>
         </Grid>
     </Frame>
+    
     <Page.TopAppBar>
         <CommandBar x:Name="TopBar" Background="Transparent" DefaultLabelPosition="Right">
             <CommandBar.SecondaryCommands>
