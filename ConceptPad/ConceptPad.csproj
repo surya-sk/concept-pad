@@ -136,6 +136,7 @@
     <Compile Include="Models\Concept.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Saving\Profile.cs" />
+    <Compile Include="Utils\Logger.cs" />
     <Compile Include="Views\ConceptPage.xaml.cs">
       <DependentUpon>ConceptPage.xaml</DependentUpon>
     </Compile>
