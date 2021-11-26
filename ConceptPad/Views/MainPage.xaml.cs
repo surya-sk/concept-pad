@@ -68,8 +68,10 @@ namespace ConceptPad.Views
             signedIn = ApplicationData.Current.LocalSettings.Values["SignedIn"]?.ToString();
             if (isNetworkAvailable && signedIn == "Yes")
             {
-                SignInButton.Visibility = Visibility.Collapsed;
-                ProfileButton.Visibility = Visibility.Visible;
+                TopSignInButton.Visibility = Visibility.Collapsed;
+                BottomSignInButton.Visibility = Visibility.Collapsed;
+                TopProfileButton.Visibility = Visibility.Visible;
+                BottomProfileButton.Visibility = Visibility.Visible;
                 graphServiceClient = await Profile.GetInstance().GetGraphServiceClient();
                 await Profile.GetInstance().ReadProfileAsync(true);
                 ObservableCollection<Concept> readConcepts = Profile.GetInstance().GetConcepts();
@@ -110,16 +112,6 @@ namespace ConceptPad.Views
         private void InitUIPrefs()
         {
             SetImagePath();
-
-            string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
-            if (cmdLabelPref == null || cmdLabelPref == "No")
-            {
-                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Bottom;
-            }
-            else
-            {
-                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Right;
-            }
 
             // disable back button
             var view = SystemNavigationManager.GetForCurrentView();
