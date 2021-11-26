@@ -22,7 +22,7 @@ namespace ConceptPad.Saving
     {
         private static Profile instance = new Profile();
         private ObservableCollection<Concept> Concepts = null;
-        StorageFolder localFolder = ApplicationData.Current.RoamingFolder;
+        StorageFolder localFolder = ApplicationData.Current.LocalFolder;
         string fileName = "concepts.txt";
         StorageFolder cacheFolder = ApplicationData.Current.LocalCacheFolder;
         string accountPicFile = "profile.png";
