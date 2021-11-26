@@ -48,15 +48,6 @@ namespace ConceptPad.Views
             var view = SystemNavigationManager.GetForCurrentView();
             view.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
             view.BackRequested += View_BackRequested;
-            string cmdLabelPref = (string)ApplicationData.Current.LocalSettings.Values["CmdBarLabels"];
-            if (cmdLabelPref == null || cmdLabelPref == "No")
-            {
-                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Bottom;
-            }
-            else
-            {
-                CmdBar.DefaultLabelPosition = CommandBarDefaultLabelPosition.Right;
-            }
         }
 
         private void View_BackRequested(object sender, BackRequestedEventArgs e)

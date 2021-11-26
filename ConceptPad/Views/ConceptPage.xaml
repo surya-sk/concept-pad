@@ -11,11 +11,25 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="LayoutVisualStates">
+                <VisualState x:Name="WideLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource Breakpoint640Plus}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters />
+                </VisualState>
+                <VisualState x:Name="NarrowLayout">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="BottomBar.Visibility" Value="Visible" />
+                        <Setter Target="TopBar.Visibility" Value="Collapsed" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
         <Pivot>
             <PivotItem Header="Details">
                 <ContentControl Content="{x:Bind concept}">
@@ -77,15 +91,27 @@
         </Pivot>
 
         <ProgressBar x:Name="ProgBar" IsIndeterminate="True" Visibility="Collapsed" VerticalAlignment="Top" />
-
-        <CommandBar x:Name="CmdBar" Grid.Row="1">
+    </Grid>
+    <Page.TopAppBar>
+        <CommandBar x:Name="TopBar" Background="Transparent" DefaultLabelPosition="Right">
             <CommandBar.SecondaryCommands>
-                <AppBarButton x:Name="ShareButton" Label="Share this concept" Click="ShareButton_Click">
+                <AppBarButton x:Name="TopShareButton" Label="Share this concept" Click="ShareButton_Click">
                     <FontIcon Glyph="" />
                 </AppBarButton>
-                <AppBarButton x:Name="DeleteButton" Icon="Delete" Label="Delete this concept" Click="DeleteButton_Click"/>
+                <AppBarButton x:Name="TopDeleteButton" Icon="Delete" Label="Delete this concept" Click="DeleteButton_Click"/>
             </CommandBar.SecondaryCommands>
-            <AppBarButton x:Name="CloseButton" Icon="Accept" Label="Done" Click="CloseButton_Click"/>
+            <AppBarButton x:Name="TopCloseButton" Icon="Accept" Label="Done" Click="CloseButton_Click"/>
         </CommandBar>
-    </Grid>
+    </Page.TopAppBar>
+    <Page.BottomAppBar>
+        <CommandBar x:Name="BottomBar" Visibility="Collapsed">
+            <CommandBar.SecondaryCommands>
+                <AppBarButton x:Name="BottomShareButton" Label="Share this concept" Click="ShareButton_Click">
+                    <FontIcon Glyph="" />
+                </AppBarButton>
+                <AppBarButton x:Name="BottomDeleteButton" Icon="Delete" Label="Delete this concept" Click="DeleteButton_Click"/>
+            </CommandBar.SecondaryCommands>
+            <AppBarButton x:Name="BottomCloseButton" Icon="Accept" Label="Done" Click="CloseButton_Click"/>
+        </CommandBar>
+    </Page.BottomAppBar>
 </Page>
