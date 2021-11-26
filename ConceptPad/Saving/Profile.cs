@@ -220,26 +220,19 @@ namespace ConceptPad.Saving
 
         private async Task<string> DownloadConceptsJsonAsync()
         {
-            try
+            await Utils.Logger.WriteLogAsync("Downloading concepts json from OneDrive");
+            var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
+            if (search.Count == 0)
             {
-                await Utils.Logger.WriteLogAsync("Downloading concepts json from OneDrive");
-                var search = await graphServiceClient.Me.Drive.Root.Search(fileName).Request().GetAsync();
-                if (search.Count == 0)
-                {
-                    return null;
-                }
-                using (Stream stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
-                {
-                    using (StreamReader sr = new StreamReader(stream))
-                    {
-                        string json = sr.ReadToEnd();
-                        return json;
-                    }
-                }
+                return null;
             }
-            catch (Exception ex)
+            using (Stream stream = await graphServiceClient.Me.Drive.Root.ItemWithPath(fileName).Content.Request().GetAsync())
             {
-                await Utils.Logger.WriteExceptionAsync(ex);
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    string json = sr.ReadToEnd();
+                    return json;
+                }
             }
         }
 
